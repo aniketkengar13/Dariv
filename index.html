@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DERIVA — Calculus, Made Visible | Derivatives · Integrals · Limits</title>
+<meta name="description" content="A rigorous, beautiful, intuitive calculus visualization site. Drag tangents, slide Riemann sums, master ε-δ.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<style>
+:root{
+  --navy:#0E2240; --navy2:#162f5c; --navy-ink:#0a1830;
+  --paper:#FDFCF6; --paper2:#F4F0E2; --paper3:#EDE8D5;
+  --orange:#FF6B2B; --orange-d:#d94e12; --orange-soft:#FFF0E6;
+  --green:#0CAF6B; --green-d:#087a4c; --green-soft:#E3F6EC;
+  --violet:#7C5CFF; --violet-soft:#ECE8FF;
+  --pink:#FF4D8D; --pink-soft:#FFE3EE;
+  --cyan:#00C2FF; --cyan-soft:#DFF6FF;
+  --amber:#FFB020; --amber-soft:#FFF3D6;
+  --teal:#00C9A7;
+  --ink:#1a2540; --muted:#5b6580; --line:#D9D2BC;
+  --grid-minor:rgba(14,34,64,.07); --grid-major:rgba(14,34,64,.14);
+  --shadow:0 18px 50px -18px rgba(14,34,64,.35);
+  --shadow-pop:0 20px 55px -18px rgba(124,92,255,.45), 0 12px 30px -14px rgba(255,77,141,.35);
+  --r:16px;
+  --sans:"Space Grotesk",system-ui,sans-serif;
+  --serif:"Source Serif 4",Georgia,serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; color:var(--ink); background:var(--paper);
+  font-family:var(--serif); font-size:17px; line-height:1.6;
+  background-image:
+    linear-gradient(var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(rgba(14,34,64,.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14,34,64,.10) 1px, transparent 1px);
+  background-size:8px 8px, 8px 8px, 40px 40px, 40px 40px;
+}
+h1,h2,h3,.btn,.nav-links,.kicker,.card-bar{font-family:var(--sans)}
+h1{font-size:clamp(2.6rem,6vw,4.6rem); line-height:.98; letter-spacing:-.03em; color:var(--navy); margin:.35em 0 .3em}
+h2{font-size:clamp(1.7rem,3.4vw,2.5rem); letter-spacing:-.02em; color:var(--navy); margin:.2em 0 .25em}
+h2 em{font-style:normal; border-bottom:4px solid var(--orange)}
+.section.alt h2 em{border-color:var(--green)}
+.mono{font-family:var(--mono)}
+kbd{font-family:var(--mono); background:var(--navy); color:#fff; border-radius:6px; padding:1px 8px; font-size:.85em}
+
+/* NAV */
+.nav{position:sticky; top:0; z-index:50; background:rgba(253,252,246,.92); backdrop-filter:blur(10px); border-bottom:2px solid var(--navy)}
+.nav-inner{max-width:1240px; margin:0 auto; display:flex; align-items:center; gap:18px; padding:10px 20px}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--navy); font-family:var(--sans); font-weight:700; letter-spacing:.06em}
+.brand-text em{display:block; font-style:normal; font-weight:400; font-size:.62rem; letter-spacing:.18em; color:var(--muted)}
+.nav-links{display:flex; gap:16px; margin-left:auto}
+.nav-links a{color:var(--navy); text-decoration:none; font-size:.86rem; font-weight:500; display:flex; align-items:center; gap:6px}
+.nav-links a:hover{color:var(--orange-d)}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.dot-o{background:var(--orange)} .dot-g{background:var(--green)} .dot-n{background:var(--navy)}
+.nav-cta{display:flex; align-items:center; gap:10px}
+.exam-badge{font-family:var(--mono); font-size:.68rem; background:var(--navy); color:#fff; padding:4px 10px; border-radius:99px; letter-spacing:.08em}
+.menu-btn{display:none}
+.mobile-menu{display:none}
+
+/* BUTTONS */
+.btn{display:inline-block; text-decoration:none; border-radius:12px; padding:12px 20px; font-weight:600; font-size:.95rem; border:2px solid transparent; cursor:pointer; transition:transform .18s cubic-bezier(.34,1.56,.64,1), background .18s, box-shadow .18s, color .18s}
+.btn:active{transform:translateY(1px) scale(.98)}
+.btn-orange{background:var(--orange); color:#fff; box-shadow:0 8px 20px -8px var(--orange)}
+.btn-orange:hover{background:var(--orange-d); transform:translateY(-2px); box-shadow:0 14px 26px -10px var(--orange)}
+.btn-navy{background:var(--navy); color:#fff}
+.btn-navy:hover{background:var(--navy2); transform:translateY(-2px)}
+.btn-ghost{background:transparent; color:var(--navy); border-color:var(--navy)}
+.btn-ghost:hover{background:var(--navy); color:#fff; transform:translateY(-2px)}
+.btn.small{padding:7px 14px; font-size:.82rem; border-radius:9px}
+.btn.attn{animation:attnPulse 1.1s ease-in-out infinite; border-color:var(--amber)}
+@keyframes attnPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,176,32,.75); transform:scale(1)}50%{box-shadow:0 0 0 10px rgba(255,176,32,0); transform:scale(1.05)}}
+
+/* LAYOUT */
+.section{max-width:1240px; margin:0 auto; padding:64px 20px 30px}
+.section.alt{background:linear-gradient(180deg, rgba(12,175,107,.07), rgba(12,175,107,.02)); border-top:2px solid var(--navy); border-bottom:2px solid var(--navy)}
+.kicker{font-size:.82rem; letter-spacing:.14em; text-transform:uppercase; color:var(--navy); font-weight:600; display:flex; align-items:center; gap:10px}
+.kicker .num{background:var(--navy); color:#fff; border-radius:8px; padding:1px 9px}
+.kicker.orange{color:var(--orange-d)} .kicker.orange .num{background:var(--orange)}
+.kicker.green{color:var(--green-d)} .kicker.green .num{background:var(--green)}
+.kicker.navy .num{background:var(--navy)}
+.rule{display:inline-block; width:34px; height:3px; background:var(--orange)}
+.sec-sub{max-width:62ch; color:#33405e}
+.hl-o{background:linear-gradient(transparent 55%, rgba(255,107,43,.45) 55%)}
+.hl-g{background:linear-gradient(transparent 55%, rgba(12,175,107,.4) 55%)}
+.hl-outline{color:transparent; -webkit-text-stroke:2px var(--navy)}
+
+/* HERO */
+.hero{max-width:1240px; margin:0 auto; padding:34px 20px 10px}
+.hero-grid{display:grid; grid-template-columns:1.02fr 1.25fr; gap:28px; align-items:start}
+.lede{font-size:1.18rem; max-width:44ch}
+.hero-actions{display:flex; gap:12px; flex-wrap:wrap; margin:18px 0}
+.hero-meta{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:18px 0; border-top:2px solid var(--navy); padding-top:14px}
+.hero-meta strong{display:block; font-size:1.05rem; color:var(--navy)}
+.hero-meta span{font-size:.72rem; color:var(--muted)}
+.hero-controls{display:flex; gap:16px; align-items:center; flex-wrap:wrap; font-family:var(--sans); font-size:.88rem; background:var(--paper2); border:2px solid var(--navy); border-radius:12px; padding:10px 14px}
+.hero-controls input[type=range]{accent-color:var(--orange)}
+.card{background:var(--paper); border:2px solid var(--navy); border-radius:var(--r); box-shadow:var(--shadow)}
+.card-bar{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 14px; border-bottom:2px solid var(--navy); font-size:.74rem; background:var(--paper2); border-radius:14px 14px 0 0}
+.card-mini{font-size:.7rem; letter-spacing:.12em; color:var(--muted); margin:0 0 8px}
+.tag{font-family:var(--mono); font-size:.7rem; padding:3px 10px; border-radius:99px; color:#fff}
+.tag-o{background:var(--orange)} .tag-g{background:var(--green)} .tag-n{background:var(--navy)}
+.hero-plot canvas, .plot-card canvas{width:100%; height:380px; display:block; border-radius:0; cursor:crosshair; touch-action:pan-y; will-change:contents}
+.card{content-visibility:auto; contain-intrinsic-size:auto 420px}
+.hero-plot{overflow:hidden}
+.plot-hint{padding:8px 14px; font-size:.7rem; color:var(--muted); border-top:1px dashed var(--line)}
+.hero-formula{padding:12px 16px; border-top:2px solid var(--navy); overflow-x:auto}
+.ticker{margin-top:22px; border:2px solid var(--navy); border-radius:12px; overflow:hidden; background:var(--navy); color:#fff}
+.ticker-inner{display:flex; gap:36px; white-space:nowrap; padding:10px 16px; animation:tick 28s linear infinite; font-size:.8rem; will-change:transform}
+@keyframes tick{to{transform:translateX(-50%)}}
+.tag-o{animation:livePulse 2.2s ease-in-out infinite}
+@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,43,.55)}50%{box-shadow:0 0 0 7px rgba(255,107,43,0)}}
+
+/* CONTROLS */
+.deriv-controls{display:flex; gap:22px; flex-wrap:wrap; align-items:center; padding:14px 18px; margin:18px 0}
+.ctl-label{font-size:.68rem; letter-spacing:.12em; color:var(--muted); display:block; margin-bottom:6px}
+.seg{display:flex; background:var(--paper2); border:2px solid var(--navy); border-radius:11px; overflow:hidden}
+.seg button{border:0; background:transparent; padding:8px 14px; font-family:var(--mono); font-size:.82rem; cursor:pointer; color:var(--navy)}
+.seg button.active{background:var(--navy); color:#fff}
+.seg.small button{padding:6px 10px}
+#funcSeg button.active{background:var(--orange)}
+#methodSeg button.active{background:var(--green)}
+.chk{font-family:var(--sans); font-size:.85rem; display:inline-flex; gap:6px; align-items:center; cursor:pointer}
+input[type=range]{accent-color:var(--navy)}
+.readout{margin-left:auto; display:flex; gap:14px}
+.read{background:var(--paper2); border:1.5px solid var(--navy); border-radius:10px; padding:6px 12px; text-align:center; min-width:86px}
+.read span{font-size:.65rem; color:var(--muted); display:block}
+.read strong{font-size:1.05rem; color:var(--navy)}
+.read.ro-o{background:var(--orange-soft); border-color:var(--orange)} .read.ro-o strong{color:var(--orange-d)}
+
+.side-by-side{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+.formula-row{display:grid; grid-template-columns:1.4fr .9fr; gap:18px; margin-top:18px}
+.formula-card,.insight{padding:18px}
+.formula.big{font-size:1.25rem; overflow-x:auto}
+.formula.small{font-size:1rem; background:var(--paper2); border-radius:10px; padding:10px 12px; margin-top:12px; overflow-x:auto}
+.formula .kx{display:inline-block; vertical-align:middle; white-space:nowrap}
+.formula .katex-display{display:inline-block; margin:0}
+/* KaTeX ships hidden MathML for screen readers — keep it out of copy/paste */
+.katex-mathml{user-select:none !important}
+.term{border-bottom:2px dotted var(--orange); cursor:help; padding:0 2px; border-radius:4px}
+.term.g{border-color:var(--green)} .term.n{border-color:var(--navy)}
+.term:hover{background:#fff3b0}
+.def-line{min-height:1.6em; font-size:.8rem; color:var(--navy); background:#FFF6D6; border-radius:8px; padding:6px 10px; margin:10px 0 0}
+.insight ul{margin:8px 0; padding-left:18px}
+.mini-proof{margin-top:10px; font-size:.75rem; background:var(--navy); color:#fff; border-radius:8px; padding:8px 10px}
+
+/* INTEGRALS */
+.integral-grid{display:grid; grid-template-columns:1.6fr .9fr; gap:18px; align-items:start}
+.span2 canvas{height:430px !important}
+.controls-card{padding:18px}
+.slider-row{display:grid; grid-template-columns:1fr; gap:4px; font-family:var(--sans); font-size:.9rem; margin:12px 0}
+.slider-row input{width:100%; accent-color:var(--green)}
+#bSlider{accent-color:var(--navy)}
+.sum-box{display:grid; gap:8px; margin:14px 0}
+.sum-box div{display:flex; justify-content:space-between; background:var(--paper2); border:1.5px solid var(--navy); border-radius:10px; padding:8px 12px}
+.sum-box .err div,.sum-box div.err{border-color:var(--green); background:var(--green-soft)}
+.exam-note{font-size:.9rem; font-style:italic; border-left:4px solid var(--green); padding-left:10px}
+
+/* LIMITS */
+.limits-grid{display:grid; grid-template-columns:1.6fr .9fr; gap:18px; align-items:start}
+#epsilonCanvas{height:430px !important}
+.verdict{margin-top:12px; border-radius:10px; padding:10px 12px; font-size:.82rem; background:var(--paper2); border:2px solid var(--navy)}
+.verdict.ok{background:var(--green-soft); border-color:var(--green)}
+.verdict.bad{background:#FDE8E0; border-color:var(--orange)}
+.btn-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+.calc-box{margin-top:10px; font-size:.75rem; background:var(--navy); color:#fff; border-radius:8px; padding:8px 10px}
+canvas.flash{animation:flashB .7s cubic-bezier(.34,1.56,.64,1)}
+@keyframes flashB{0%{box-shadow:0 0 0 0 rgba(12,175,107,.9)}100%{box-shadow:0 0 0 22px rgba(12,175,107,0)}}
+.verdict{transition:background .3s, border-color .3s, transform .3s}
+.verdict.ok{animation:popIn .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(.97); opacity:.4}}
+
+/* PROPER ENTRANCE + STEP ANIMATIONS */
+.reveal{opacity:0; transform:translateY(22px) scale(.995); transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1)}
+.reveal.in{opacity:1; transform:none}
+
+/* PROOFS */
+.proof-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+.proof-card{padding:18px; outline:none}
+.proof-card:focus{box-shadow:0 0 0 4px rgba(255,107,43,.45), var(--shadow)}
+.proof-steps{min-height:220px; margin-top:12px}
+.pstep{display:none; border-left:4px solid var(--line); padding:8px 12px; margin:8px 0; background:#fff; border-radius:0 10px 10px 0}
+.pstep.visible{display:block; animation:slidein .45s cubic-bezier(.22,1,.36,1) both}
+.pstep.done{display:block; opacity:.85}
+.pstep.current{border-color:var(--orange); background:var(--orange-soft); animation:slidein .45s cubic-bezier(.22,1,.36,1) both, glowPulse 1.6s ease-in-out .45s 1}
+@keyframes glowPulse{0%{box-shadow:0 0 0 0 rgba(255,107,43,.5)}100%{box-shadow:0 0 0 14px rgba(255,107,43,0)}}
+#proofCard2 .pstep.current{border-color:var(--navy); background:#E7ECF7}
+@keyframes slidein{from{transform:translateX(18px); opacity:0}to{transform:none; opacity:1}}
+.proof-bar{display:flex; justify-content:space-between; align-items:center; margin-top:12px}
+.pstep .katex{font-size:1.05em}
+
+/* PRACTICE */
+.practice-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+.pcard{padding:0; overflow:hidden}
+.pcard-head{padding:14px 18px; border-bottom:2px solid var(--navy); background:var(--paper2); display:flex; justify-content:space-between; gap:10px; align-items:center}
+.pcard-body{padding:16px 18px}
+.pcard-body .story{font-size:1.02rem}
+.hints{margin:12px 0; display:grid; gap:8px}
+.hint{display:none; font-size:.92rem; background:#FFF6D6; border:1.5px dashed var(--navy); border-radius:10px; padding:8px 12px}
+.hint.show{display:block; animation:slidein .4s cubic-bezier(.22,1,.36,1) both}
+.solution{display:none; margin-top:10px; background:var(--navy); color:#fff; border-radius:10px; padding:12px 14px; font-size:.93rem}
+.solution.show{display:block; animation:slidein .45s cubic-bezier(.22,1,.36,1) both}
+.solution .katex{color:#fff}
+.pcard-actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+.diff{font-family:var(--mono); font-size:.68rem; padding:3px 10px; border-radius:99px; background:var(--navy); color:#fff}
+.diff.o{background:var(--orange)} .diff.g{background:var(--green)}
+.exam-strip{margin-top:18px; padding:12px 18px; display:flex; gap:18px; flex-wrap:wrap; font-size:.78rem}
+
+/* FOOTER */
+.footer{border-top:0; margin-top:50px; background:linear-gradient(180deg,#0E2240,#241a5e 60%,#3a1350); color:#EDE8D5; overflow:hidden}
+.foot-beam{height:5px; background:linear-gradient(90deg,var(--orange),var(--pink),var(--violet),var(--cyan),var(--green),var(--amber),var(--orange)); background-size:200% 100%; animation:slideGrad 6s linear infinite}
+.foot-inner{max-width:1240px; margin:0 auto; padding:34px 20px 10px; display:grid; grid-template-columns:1.35fr 1fr 1fr 1.25fr; gap:26px}
+.brand-light{color:#fff}
+.brand-light .brand-text em{color:#B9B3D6}
+.brand-mark.float{display:inline-block; animation:floatBob 4s ease-in-out infinite}
+@keyframes floatBob{50%{transform:translateY(-4px) rotate(-4deg)}}
+.foot-brand .dim{color:#CFC9E8}
+.foot-live{display:flex; align-items:center; gap:8px; font-size:.72rem; color:#7DF9FF; margin-top:10px}
+.pulse-dot{width:9px; height:9px; border-radius:50%; background:var(--teal); box-shadow:0 0 0 0 rgba(0,201,167,.7); animation:dotPulse 1.8s ease-out infinite}
+@keyframes dotPulse{70%{box-shadow:0 0 0 10px rgba(0,201,167,0)}100%{box-shadow:0 0 0 0 rgba(0,201,167,0)}}
+.foot-h{font-size:.68rem; letter-spacing:.22em; margin:0 0 10px; background:linear-gradient(90deg,#FFB020,#FF4D8D,#7DF9FF); -webkit-background-clip:text; background-clip:text; color:transparent}
+.foot-links a{color:#fff; display:flex; align-items:center; gap:8px; text-decoration:none; padding:3px 0; opacity:.88}
+.dot-v{background:var(--violet)} .dot-p{background:var(--pink)}
+.foot-formulas .ff{background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.16); border-left:4px solid var(--amber); border-radius:10px; padding:7px 12px; margin:0 0 8px; color:#fff; transition:transform .2s, background .2s, border-color .2s}
+.foot-formulas .ff:nth-child(3){border-color:var(--green)}
+.foot-formulas .ff:nth-child(4){border-color:var(--violet)}
+.foot-formulas .ff:nth-child(5){border-color:var(--cyan)}
+.foot-formulas .ff:hover{transform:translateX(6px); background:rgba(255,255,255,.13)}
+.foot-base{max-width:1240px; margin:6px auto 0; padding:14px 20px 22px; display:flex; align-items:center; justify-content:space-between; gap:14px; border-top:1px solid rgba(255,255,255,.14); font-size:.74rem; color:#B9B3D6}
+.to-top{display:grid; place-items:center; width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,var(--orange),var(--pink),var(--violet)); color:#fff; text-decoration:none; font-size:1.1rem; transition:transform .2s}
+.to-top:hover{transform:translateY(-4px) scale(1.06)}
+.small{font-size:.78rem}
+
+/* POPOVER + FLASH */
+#popover{position:fixed; z-index:99; max-width:260px; background:var(--navy); color:#fff; font-family:var(--sans); font-size:.8rem; padding:10px 12px; border-radius:10px; pointer-events:none; opacity:0; transform:translateY(4px); transition:opacity .15s, transform .15s; box-shadow:var(--shadow)}
+#popover.show{opacity:1; transform:none}
+#popover b{color:#FFD9C2}
+#flash{position:fixed; top:74px; left:50%; transform:translateX(-50%) translateY(-6px); z-index:99; font-family:var(--mono); font-size:.82rem; background:var(--green); color:#fff; padding:8px 18px; border-radius:99px; opacity:0; transition:.25s; pointer-events:none}
+#flash.show{opacity:1; transform:translateX(-50%)}
+
+/* SLIDERS */
+input[type=range]{cursor:pointer; height:22px}
+input[type=range]::-webkit-slider-thumb{transition:transform .15s}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.25)}
+
+/* REDUCED MOTION */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important}
+  .reveal{opacity:1; transform:none}
+  .ticker-inner{animation:none}
+  .aurora,.blob,#particles{display:none}
+}
+
+/* ============ COLOUR + ANIMATION PACK ============ */
+#particles{position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.9}
+.aurora{position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden}
+.blob{position:absolute; width:46vmax; height:46vmax; border-radius:50%; filter:blur(24px); opacity:.28; mix-blend-mode:multiply; animation:drift 26s ease-in-out infinite alternate; will-change:transform}
+.blob.b1{background:radial-gradient(circle at 30% 30%, #FFB020, transparent 65%); top:-12vmax; left:-10vmax}
+.blob.b2{background:radial-gradient(circle at 60% 40%, #FF4D8D, transparent 65%); top:-8vmax; right:-12vmax; animation-delay:-6s}
+.blob.b3{background:radial-gradient(circle at 40% 60%, #00C2FF, transparent 65%); bottom:-14vmax; left:20vw; animation-delay:-12s}
+.blob.b4{background:radial-gradient(circle at 50% 50%, #00C9A7, transparent 65%); bottom:-10vmax; right:10vw; animation-delay:-17s; opacity:.22}
+@keyframes drift{from{transform:translate(0,0) scale(1)}50%{transform:translate(4vw,-3vh) scale(1.12)}to{transform:translate(-3vw,4vh) scale(.94)}}
+main,.nav,.footer{position:relative; z-index:1}
+#progress{position:fixed; top:0; left:0; height:4px; width:0; z-index:80; background:linear-gradient(90deg,var(--orange),var(--pink),var(--violet),var(--cyan),var(--green)); background-size:200% 100%; animation:slideGrad 6s linear infinite}
+@keyframes slideGrad{to{background-position:200% 0}}
+
+/* gradient headline + bouncy highlights */
+.grad-text{background:linear-gradient(92deg,#FF6B2B,#FF4D8D 25%,#7C5CFF 55%,#00C2FF 80%,#0CAF6B); -webkit-background-clip:text; background-clip:text; color:transparent; animation:hueSlide 8s linear infinite; background-size:220% 100%}
+@keyframes hueSlide{to{background-position:220% 0}}
+.hl-o{background:linear-gradient(transparent 55%, rgba(255,107,43,.55) 55%, rgba(255,77,141,.45) 100%)}
+.hl-g{background:linear-gradient(transparent 55%, rgba(12,175,107,.45) 55%, rgba(0,194,255,.4) 100%)}
+h1 .pop{display:inline-block; animation:popWiggle 5s ease-in-out infinite}
+h1 .pop:nth-of-type(2){animation-delay:-2.5s}
+@keyframes popWiggle{0%,88%,100%{transform:none}90%{transform:rotate(-2deg) scale(1.04)}94%{transform:rotate(2deg) scale(1.02)}}
+.rule{background:linear-gradient(90deg,var(--orange),var(--pink),var(--violet)); animation:rulePulse 2.6s ease-in-out infinite}
+@keyframes rulePulse{50%{transform:scaleX(1.6); opacity:.7}}
+
+/* rainbow card border */
+.card.rainbow{position:relative; border:2px solid transparent; background:linear-gradient(var(--paper),var(--paper)) padding-box, conic-gradient(from var(--ra,0deg),#FF6B2B,#FF4D8D,#7C5CFF,#00C2FF,#0CAF6B,#FFB020,#FF6B2B) border-box; animation:spinRa 12s linear infinite}
+@property --ra{syntax:'<angle>'; initial-value:0deg; inherits:false}
+@keyframes spinRa{to{--ra:360deg}}
+.card{transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s}
+.card:hover{transform:translateY(-3px); box-shadow:var(--shadow-pop)}
+.tag-rainbow{background:linear-gradient(90deg,#FF6B2B,#FF4D8D,#7C5CFF); background-size:200% 100%; animation:slideGrad 4s linear infinite}
+.tag-g{background:linear-gradient(90deg,#0CAF6B,#00C9A7)}
+.tag-n{background:linear-gradient(90deg,#0E2240,#7C5CFF)}
+
+/* buttons: shine sweep */
+.btn{position:relative; overflow:hidden}
+.btn::after{content:""; position:absolute; top:0; left:-70%; width:45%; height:100%; background:linear-gradient(105deg,transparent,rgba(255,255,255,.55),transparent); transform:skewX(-20deg); transition:left .5s}
+.btn:hover::after{left:130%}
+.exam-badge{background:linear-gradient(90deg,#0E2240,#7C5CFF); animation:badgeBob 3s ease-in-out infinite}
+@keyframes badgeBob{50%{transform:translateY(-2px) rotate(-1.5deg)}}
+
+/* kickers per chapter get colour */
+.kicker.orange .num{background:linear-gradient(90deg,var(--orange),var(--pink))}
+.kicker.green .num{background:linear-gradient(90deg,var(--green),var(--teal))}
+.kicker.navy .num{background:linear-gradient(90deg,var(--navy),var(--violet))}
+#derivatives .sec-head h2 em{border-image:linear-gradient(90deg,var(--orange),var(--pink)) 1}
+#integrals h2 em{border-image:linear-gradient(90deg,var(--green),var(--cyan)) 1}
+#limits h2 em{border-image:linear-gradient(90deg,var(--violet),var(--cyan)) 1}
+#proofs h2 em{border-image:linear-gradient(90deg,var(--amber),var(--pink)) 1}
+#practice h2 em{border-image:linear-gradient(90deg,var(--pink),var(--amber)) 1}
+
+/* ticker goes multicolour */
+.ticker{background:linear-gradient(90deg,#0E2240,#2a1e63,#0E2240); background-size:200% 100%; animation:slideGrad 10s linear infinite}
+#ticker span:nth-child(3n){color:#FFB020}
+#ticker span:nth-child(3n+1){color:#7DF9FF}
+#ticker span:nth-child(3n+2){color:#FF8FB5}
+
+/* sliders get colour */
+#heroSpeed{accent-color:var(--pink)}
+#nSlider{accent-color:var(--green)}
+#bSlider{accent-color:var(--cyan)}
+#epsSlider{accent-color:var(--violet)}
+#delSlider{accent-color:var(--orange)}
+#hSlider{accent-color:var(--pink)}
+
+/* readouts go neon */
+.read.ro-o{background:linear-gradient(180deg,#FFF0E6,#FFE3EE); border-color:var(--pink)}
+.read.ro-o strong{background:linear-gradient(90deg,#d94e12,#FF4D8D); -webkit-background-clip:text; background-clip:text; color:transparent}
+.sum-box div:nth-child(1){border-color:var(--teal); background:linear-gradient(180deg,#fff,#DFF6FF)}
+.sum-box div.err{border-color:var(--pink); background:linear-gradient(180deg,#FFE3EE,#FFF3D6)}
+.verdict.ok{background:linear-gradient(180deg,#E3F6EC,#DFF6FF); border-color:var(--teal)}
+.verdict.bad{background:linear-gradient(180deg,#FDE8E0,#FFE3EE)}
+.calc-box{background:linear-gradient(90deg,#0E2240,#4a2fb3,#0E2240); background-size:200% 100%; animation:slideGrad 8s linear infinite}
+.mini-proof{background:linear-gradient(90deg,#0E2240,#5b2d8e,#FF4D8D); background-size:200% 100%; animation:slideGrad 9s linear infinite}
+.def-line{background:linear-gradient(180deg,#FFF6D6,#FFE3EE)}
+.exam-strip{background:linear-gradient(180deg,var(--paper),#FFF3D6); border-image:linear-gradient(90deg,var(--orange),var(--pink),var(--violet),var(--cyan),var(--green)) 1}
+
+/* practice cards get colourful tops */
+#practiceGrid .pcard:nth-child(1){border-top:6px solid var(--orange)}
+#practiceGrid .pcard:nth-child(2){border-top:6px solid var(--violet)}
+#practiceGrid .pcard:nth-child(3){border-top:6px solid var(--green)}
+#practiceGrid .pcard:nth-child(4){border-top:6px solid var(--cyan)}
+#practiceGrid .pcard:nth-child(1):hover{box-shadow:0 20px 50px -18px rgba(255,107,43,.6)}
+#practiceGrid .pcard:nth-child(2):hover{box-shadow:0 20px 50px -18px rgba(124,92,255,.6)}
+#practiceGrid .pcard:nth-child(3):hover{box-shadow:0 20px 50px -18px rgba(12,175,107,.6)}
+#practiceGrid .pcard:nth-child(4):hover{box-shadow:0 20px 50px -18px rgba(0,194,255,.6)}
+.diff.o{background:linear-gradient(90deg,var(--orange),var(--pink))}
+.diff.g{background:linear-gradient(90deg,var(--green),var(--teal))}
+
+/* proof cards tinted */
+#proofCard1{border-top:6px solid transparent; border-image:linear-gradient(90deg,var(--orange),var(--amber)) 1}
+#proofCard2{border-top:6px solid transparent; border-image:linear-gradient(90deg,var(--violet),var(--cyan)) 1}
+
+/* confetti pieces */
+#confetti{position:fixed; inset:0; pointer-events:none; z-index:90; overflow:hidden}
+#confetti i{position:absolute; top:-12px; width:9px; height:14px; border-radius:2px; animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg); opacity:.9}}
+
+/* footer goes festive */
+.footer{background:linear-gradient(180deg,#0E2240,#241a5e 60%,#3a1350)}
+.foot-links a{transition:.2s}
+.foot-links a:hover{color:#FFB020; transform:translateX(4px)}
+
+/* ============ MORE ANIMATION PACK ============ */
+section{scroll-margin-top:72px}
+/* page-load intro */
+.hero-copy>*{animation:riseIn .7s cubic-bezier(.22,1,.36,1) both}
+.hero-copy>*:nth-child(2){animation-delay:.07s}
+.hero-copy>*:nth-child(3){animation-delay:.14s}
+.hero-copy>*:nth-child(4){animation-delay:.21s}
+.hero-copy>*:nth-child(5){animation-delay:.28s}
+@keyframes riseIn{from{opacity:0; transform:translateY(20px)}}
+/* cursor glow follower */
+#glow{position:fixed; left:0; top:0; width:340px; height:340px; z-index:2; pointer-events:none; opacity:0; transition:opacity .5s; background:radial-gradient(circle, rgba(255,77,141,.18), rgba(124,92,255,.14) 42%, transparent 66%); transform:translate(-500px,-500px)}
+#glow.on{opacity:1}
+/* 3D tilt cards */
+.plot-card,.hero-plot{transform-style:preserve-3d; will-change:transform}
+/* proof step counter pop */
+.countpop{display:inline-block; animation:countPop .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes countPop{from{transform:scale(1.5) rotate(-4deg); color:var(--pink)}}
+/* active tour/demo buttons */
+.btn.running{background:linear-gradient(90deg,var(--pink),var(--violet)); color:#fff; border-color:transparent}
+#tourBtn,#demoBtn{transition:transform .18s, background .18s, box-shadow .18s}
+
+@media(max-width:980px){
+  .hero-grid,.side-by-side,.formula-row,.integral-grid,.limits-grid,.proof-grid,.practice-grid{grid-template-columns:1fr}
+  .nav-links,.nav-cta{display:none} .menu-btn{display:block; margin-left:auto}
+  .mobile-menu.show{display:grid; background:var(--paper); border-bottom:2px solid var(--navy); padding:10px 20px; gap:8px}
+  .mobile-menu a{color:var(--navy); font-family:var(--sans); text-decoration:none; font-weight:600}
+  .foot-inner{grid-template-columns:1fr 1fr}
+  .foot-brand{grid-column:1 / -1}
+  .hero-plot canvas,.plot-card canvas{height:320px}
+}
+@media(max-width:620px){
+  .foot-inner{grid-template-columns:1fr}
+}
+
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span></div>
+<canvas id="particles" aria-hidden="true"></canvas>
+<div id="progress" aria-hidden="true"></div>
+<div id="glow" aria-hidden="true"></div>
+<div id="confetti" aria-hidden="true"></div>
+<div id="popover" role="tooltip"></div>
+<div id="flash" aria-live="polite"></div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top" aria-label="Deriva home">
+      <span class="brand-mark" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="1" y="1" width="26" height="26" rx="6" fill="#0E2240"/><path d="M5 20 C9 20 9 8 13.5 8 C17 8 15 20 19 20" stroke="#FF6B2B" stroke-width="2.2" stroke-linecap="round"/><circle cx="13.5" cy="8" r="2.4" fill="#0CAF6B"/><line x1="6" y1="22" x2="22" y2="22" stroke="#FDFCF6" stroke-width="1" opacity=".5"/></svg></span>
+      <span class="brand-text">DERIVA <em>calculus, made visible</em></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#derivatives"><span class="dot dot-o"></span>Derivatives</a>
+      <a href="#integrals"><span class="dot dot-g"></span>Integrals</a>
+      <a href="#limits"><span class="dot dot-n"></span>Limits</a>
+      <a href="#proofs">Proofs</a>
+      <a href="#practice">Practice</a>
+    </nav>
+    <div class="nav-cta">
+      <span class="exam-badge">EXAM-READY</span>
+      <a href="#practice" class="btn btn-navy small">Drill now</a>
+    </div>
+    <button id="menuBtn" class="menu-btn" aria-label="Menu">☰</button>
+  </div>
+  <div id="mobileMenu" class="mobile-menu">
+    <a href="#derivatives">Derivatives</a><a href="#integrals">Integrals</a><a href="#limits">Limits</a><a href="#proofs">Proofs</a><a href="#practice">Practice</a>
+  </div>
+</header>
+
+<main id="top">
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <p class="kicker"><span class="rule"></span> Ch. 01 — 03 · Limits · Derivatives · Integrals</p>
+      <h1>See the <span class="hl-o pop">slope</span>.<br>See the <span class="hl-g pop">area</span>.<br><span class="grad-text">Prove the limit.</span></h1>
+      <p class="lede">A rigorous visual laboratory for calculus. Every curve is draggable. Every rectangle counts. Every ε finds its δ. Built for intuition that survives the exam.</p>
+      <div class="hero-actions">
+        <a href="#derivatives" class="btn btn-orange">Drag a tangent →</a>
+        <a href="#limits" class="btn btn-ghost">Try the ε–δ tool</a>
+      </div>
+      <div class="hero-meta mono">
+        <div><strong id="heroSlope">m = 1.00</strong><span>tangent slope at moving point</span></div>
+        <div><strong id="heroPoint">x = 0.00</strong><span>sweeping f(x) = sin(x)</span></div>
+        <div><strong>∞ fps</strong><span>canvas · zoom / pan enabled</span></div>
+      </div>
+      <div class="hero-controls">
+        <label>Sweep speed <input id="heroSpeed" type="range" min="0" max="100" value="32"><span id="heroSpeedVal" class="mono">0.6×</span></label>
+        <label class="chk"><input id="heroTrace" type="checkbox" checked> slope trace</label>
+        <button id="heroPause" class="btn btn-navy small">Pause</button>
+      </div>
+    </div>
+    <div class="hero-plot card rainbow">
+      <div class="card-bar">
+        <span class="mono">FIG. 00 — f(x) = sin(x) with sweeping tangent</span>
+        <span class="tag tag-rainbow">● LIVE</span>
+      </div>
+      <canvas id="heroCanvas" aria-label="Tangent line sweeping along sine curve"></canvas>
+      <div class="plot-hint mono">scroll to zoom · drag to pan · double-click to reset</div>
+      <div class="hero-formula formula" id="heroFormula"></div>
+    </div>
+  </div>
+  <div class="ticker mono" aria-hidden="true">
+    <div class="ticker-inner" id="ticker"></div>
+  </div>
+</section>
+
+<!-- ============ DERIVATIVES ============ -->
+<section id="derivatives" class="section">
+  <div class="sec-head">
+    <p class="kicker orange"><span class="num">01</span> Derivatives — the geometry of change</p>
+    <h2>Drag a point. <em>Watch the slope live.</em></h2>
+    <p class="sec-sub">Side-by-side: the function <span class="mono">f</span> and its derivative <span class="mono">f′</span>. One finger controls both. The tangent on the left becomes the height on the right.</p>
+  </div>
+
+  <div class="deriv-controls card">
+    <div class="ctl-group">
+      <span class="ctl-label mono">FUNCTION</span>
+      <div class="seg" id="funcSeg">
+        <button data-f="cubic" class="active">x³−3x</button>
+        <button data-f="sin">sin(x)</button>
+        <button data-f="quad">x²</button>
+        <button data-f="exp">e^{0.4x}/2</button>
+      </div>
+    </div>
+    <div class="ctl-group">
+      <span class="ctl-label mono">SHOW</span>
+      <label class="chk"><input type="checkbox" id="showTangent" checked> tangent</label>
+      <label class="chk"><input type="checkbox" id="showSecant"> secant (h=<span id="hVal">0.8</span>)</label>
+      <input id="hSlider" type="range" min="5" max="200" value="80" style="width:90px" aria-label="Secant distance h">
+      <button id="tourBtn" class="btn btn-ghost small">▶ Tour x₀</button>
+    </div>
+    <div class="ctl-group readout mono">
+      <div class="read"><span>x₀</span><strong id="dX">0.80</strong></div>
+      <div class="read"><span>f(x₀)</span><strong id="dF">−1.89</strong></div>
+      <div class="read ro-o"><span>f′(x₀) = slope</span><strong id="dS">−1.08</strong></div>
+    </div>
+  </div>
+
+  <div class="side-by-side">
+    <div class="card plot-card">
+      <div class="card-bar"><span class="mono">FIG. 01A — y = f(x) · drag the orange point</span><span class="tag tag-o">f</span></div>
+      <canvas id="derivCanvas" aria-label="Draggable point on function with tangent"></canvas>
+      <div class="plot-hint mono">drag ● point · scroll zoom · drag background to pan</div>
+    </div>
+    <div class="card plot-card">
+      <div class="card-bar"><span class="mono">FIG. 01B — y = f′(x) · same x₀ projected</span><span class="tag tag-o">f′</span></div>
+      <canvas id="derivPrimeCanvas" aria-label="Derivative graph with projected point"></canvas>
+      <div class="plot-hint mono">dashed connector shows slope → height</div>
+    </div>
+  </div>
+
+  <div class="formula-row">
+    <div class="formula-card card">
+      <p class="mono card-mini">DEFINITION — hover any term</p>
+      <div class="formula big" id="derivFormula"></div>
+      <p class="def-line mono" id="derivDefLine">hover a highlighted term to see its definition…</p>
+    </div>
+    <div class="insight card">
+      <p class="mono card-mini">READING THE PICTURE</p>
+      <ul>
+        <li><b class="o">Tangent flat?</b> f′ crosses zero — critical point, candidate max/min.</li>
+        <li><b class="o">f rising?</b> f′ above axis. Falling? f′ below.</li>
+        <li><b>Exam tip:</b> sketch f′ sign chart directly from f's slopes before computing.</li>
+      </ul>
+      <div class="mini-proof mono">secant slope → tangent as h→0 · toggle secant above</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INTEGRALS ============ -->
+<section id="integrals" class="section alt">
+  <div class="sec-head">
+    <p class="kicker green"><span class="num">02</span> Integrals — area as a sum</p>
+    <h2>Riemann rectangles, <em>filled smoothly.</em></h2>
+    <p class="sec-sub">Drag the partition slider. Rectangles morph — they don't jump. Watch the sum converge to the exact area.</p>
+  </div>
+
+  <div class="integral-grid">
+    <div class="card plot-card span2">
+      <div class="card-bar"><span class="mono">FIG. 02 — Riemann sum for f(x) = x²/4 + 1 on [0, 4]</span><span class="tag tag-g" id="riemannVal">R₈ = —</span></div>
+      <canvas id="riemannCanvas" aria-label="Riemann sum rectangles under the curve"></canvas>
+      <div class="plot-hint mono">scroll to zoom · drag to pan · double-click resets</div>
+    </div>
+    <div class="card controls-card">
+      <p class="mono card-mini">PARTITION CONTROLS</p>
+      <label class="slider-row">Rectangles n = <strong id="nVal">8</strong><input id="nSlider" type="range" min="1" max="64" value="8"></label>
+      <label class="slider-row">Right end b = <strong id="bVal">4.0</strong><input id="bSlider" type="range" min="10" max="60" value="40"></label>
+      <div class="seg small" id="methodSeg">
+        <button data-m="left">left</button>
+        <button data-m="mid" class="active">mid</button>
+        <button data-m="right">right</button>
+        <button data-m="trap">trap.</button>
+      </div>
+      <label class="chk"><input type="checkbox" id="showExact" checked> show exact area</label>
+      <label class="chk"><input type="checkbox" id="animateFill" checked> smooth-fill animation</label>
+      <div class="sum-box mono">
+        <div><span>Riemann sum</span><strong id="sumApprox">—</strong></div>
+        <div><span>Exact ∫</span><strong id="sumExact">—</strong></div>
+        <div class="err"><span>Error</span><strong id="sumErr">—</strong></div>
+      </div>
+      <div class="formula small" id="riemannFormula"></div>
+      <p class="exam-note">Exam-ready: midpoint &amp; trapezoid converge ~1/n² — twice the rectangles ≈ ¼ the error. Left/right only ~1/n.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LIMITS / EPSILON-DELTA ============ -->
+<section id="limits" class="section">
+  <div class="sec-head">
+    <p class="kicker navy"><span class="num">03</span> Limits — the ε–δ game</p>
+    <h2>Drag ε. <em>δ snaps. The flash confirms.</em></h2>
+    <p class="sec-sub">Claim: <span id="limitClaim"></span> Challenge the claim by shrinking ε — the tool finds the largest δ that keeps the graph inside the box.</p>
+  </div>
+
+  <div class="limits-grid">
+    <div class="card plot-card">
+      <div class="card-bar"><span class="mono">FIG. 03 — y = x² near a = 2 · ε-band (horizontal) · δ-band (vertical)</span><span class="tag tag-n" id="deltaTag">δ = —</span></div>
+      <canvas id="epsilonCanvas" aria-label="Epsilon-delta bands around a equals 2"></canvas>
+      <div class="plot-hint mono">drag ◂ ▸ ε-handles · scroll zoom · drag bg pan · dbl-click reset</div>
+    </div>
+    <div class="card controls-card">
+      <p class="mono card-mini">ε–δ CONTROLS</p>
+      <label class="slider-row">ε = <strong id="epsVal">0.80</strong><input id="epsSlider" type="range" min="5" max="200" value="80"></label>
+      <label class="slider-row">your δ = <strong id="delVal">—</strong><input id="delSlider" type="range" min="1" max="60" value="40"></label>
+      <div class="btn-row">
+        <button id="snapBtn" class="btn btn-navy small">✦ Snap δ to max valid</button>
+        <button id="demoBtn" class="btn btn-ghost small">▶ Auto-shrink ε</button>
+        <button id="checkBtn" class="btn btn-ghost small">Check my δ</button>
+      </div>
+      <label class="chk"><input type="checkbox" id="autoSnap" checked> auto-snap δ when ε changes (with flash)</label>
+      <div id="epsVerdict" class="verdict mono">drag ε to play the game…</div>
+      <div class="formula small" id="epsFormula"></div>
+      <div class="calc-box mono" id="deltaCalc">δ_max = min( √(4+ε)−2, 2−√(4−ε) )</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROOFS ============ -->
+<section id="proofs" class="section alt">
+  <div class="sec-head">
+    <p class="kicker"><span class="num">04</span> Proofs — step by step, key by key</p>
+    <h2>Press <kbd>→</kbd> <em>to walk the proof.</em></h2>
+    <p class="sec-sub">Each proof plays like a slideshow. Focus the card and tap <kbd>→</kbd> / <kbd>←</kbd> or use the buttons. Hover highlighted terms for definitions.</p>
+  </div>
+  <div class="proof-grid">
+    <div class="card proof-card" id="proofCard1" tabindex="0">
+      <p class="mono card-mini">PROOF A · <span class="tag tag-o">derivative</span> d/dx [x²] = 2x</p>
+      <div class="formula" id="proofAFormula"></div>
+      <div class="proof-steps" id="proofASteps"></div>
+      <div class="proof-bar">
+        <button class="btn btn-ghost small" data-prev="A">← Prev</button>
+        <span class="mono" id="proofACount">1 / 6</span>
+        <button class="btn btn-orange small" data-next="A">Next →</button>
+      </div>
+      <p class="plot-hint mono">tip: click card, then use → key</p>
+    </div>
+    <div class="card proof-card" id="proofCard2" tabindex="0">
+      <p class="mono card-mini">PROOF B · <span class="tag tag-n">limit</span> lim<sub>x→2</sub> x² = 4 (ε–δ)</p>
+      <div class="formula" id="proofBFormula"></div>
+      <div class="proof-steps" id="proofBSteps"></div>
+      <div class="proof-bar">
+        <button class="btn btn-ghost small" data-prev="B">← Prev</button>
+        <span class="mono" id="proofBCount">1 / 6</span>
+        <button class="btn btn-navy small" data-next="B">Next →</button>
+      </div>
+      <p class="plot-hint mono">tip: click card, then use → key</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRACTICE ============ -->
+<section id="practice" class="section">
+  <div class="sec-head">
+    <p class="kicker orange"><span class="num">05</span> Practice — applied, hinted, exam-graded</p>
+    <h2>Do the problem. <em>Then peek.</em></h2>
+    <p class="sec-sub">Four exam-style applied problems. Hints unlock in stages — solutions stay hidden until you ask.</p>
+  </div>
+  <div class="practice-grid" id="practiceGrid"></div>
+  <div class="exam-strip card mono">
+    <span>✓ units on every applied answer</span><span>✓ sign chart before max/min</span><span>✓ +C on indefinite integrals</span><span>✓ ε–δ: bound the rogue factor first</span>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="foot-beam" aria-hidden="true"></div>
+  <div class="foot-inner">
+    <div class="foot-brand">
+      <a class="brand brand-light" href="#top" aria-label="Deriva home">
+        <span class="brand-mark float" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 28 28" fill="none"><rect x="1" y="1" width="26" height="26" rx="6" fill="#FDFCF6"/><path d="M5 20 C9 20 9 8 13.5 8 C17 8 15 20 19 20" stroke="#FF6B2B" stroke-width="2.2" stroke-linecap="round"/><circle cx="13.5" cy="8" r="2.4" fill="#0CAF6B"/><line x1="6" y1="22" x2="22" y2="22" stroke="#0E2240" stroke-width="1" opacity=".5"/></svg></span>
+        <span class="brand-text">DERIVA <em>calculus, made visible</em></span>
+      </a>
+      <p class="mono small dim">Rigorous · Beautiful · Intuitive · Exam-ready.<br>Pure illustration, no photographs.<br>Set in Space Grotesk, Source Serif &amp; KaTeX.</p>
+      <div class="foot-live mono"><span class="pulse-dot"></span> all systems visual · canvas 60fps</div>
+    </div>
+    <nav class="mono small foot-links" aria-label="Explore">
+      <p class="foot-h">EXPLORE</p>
+      <a href="#derivatives"><span class="dot dot-o"></span>Derivatives</a>
+      <a href="#integrals"><span class="dot dot-g"></span>Integrals</a>
+      <a href="#limits"><span class="dot dot-n"></span>Limits</a>
+      <a href="#proofs"><span class="dot dot-v"></span>Proofs</a>
+      <a href="#practice"><span class="dot dot-p"></span>Practice</a>
+    </nav>
+    <nav class="mono small foot-links" aria-label="Toolkit">
+      <p class="foot-h">TOOLKIT</p>
+      <a href="#derivatives">↗ Tangent lab</a>
+      <a href="#integrals">↗ Riemann lab</a>
+      <a href="#limits">↗ ε–δ playground</a>
+      <a href="#proofs">↗ Step-through proofs</a>
+      <a href="#practice">↗ Applied drills</a>
+    </nav>
+    <div class="mono small foot-formulas">
+      <p class="foot-h">TONIGHT'S FORMULAS</p>
+      <div class="ff">d/dx[xⁿ] = n·xⁿ⁻¹</div>
+      <div class="ff">∫x² dx = x³/3 + C</div>
+      <div class="ff">lim<sub>x→2</sub> x² = 4</div>
+      <div class="ff">y−f(a) = f′(a)·(x−a)</div>
+    </div>
+  </div>
+  <div class="foot-base mono">
+    <span>© 2026 DERIVA · f(x)=sin(x) · f′=cos(x) · graph paper 1mm/5mm</span>
+    <a href="#top" class="to-top" aria-label="Back to top">↑</a>
+  </div>
+</footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script>
+/* DERIVA — optimized visualization engine (single scheduler + dirty-flag rendering) */
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), lerp=(a,b,t)=>a+(b-a)*t;
+const NAVY="#0E2240", ORANGE="#FF6B2B", GREEN="#0CAF6B", PAPER="#FDFCF6";
+const VIOLET="#7C5CFF", PINK="#FF4D8D", CYAN="#00C2FF", AMBER="#FFB020", TEAL="#00C9A7";
+const RAINBOW=[ORANGE,PINK,VIOLET,CYAN,GREEN,AMBER];
+function slopeColor(m){ // orange→violet→cyan by slope, pink when flat
+  if(Math.abs(m)<0.18) return PINK;
+  return m>0?ORANGE:CYAN;
+}
+function hueCycle(now, speed){ return `hsl(${(now/speed)%360} 90% 55%)`; }
+const easeOut=t=>1-Math.pow(1-t,3), easeInOut=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const REDUCED=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const DPR_CAP=1.75;
+
+/* ---------- KaTeX helper ---------- */
+function tex(el, latex, display){
+  if(!el) return;
+  try{ window.katex.render(latex, el, {throwOnError:false, displayMode:!!display}); }
+  catch(e){ el.textContent = latex; }
+}
+function termSpan(latex, word, def, cls){
+  return `<span class="term ${cls||''}" data-word="${word}" data-def="${def}">${latex}</span>`;
+}
+function renderMixed(el, parts){
+  // NOTE: tex is injected via textContent (never innerHTML) because
+  // formulas contain raw '<' (e.g. 0<|x-2|), which would parse as HTML tags.
+  el.innerHTML='';
+  for(const p of parts){
+    if(p.t==='tex'){
+      const s=document.createElement('span'); s.className='kx'; s.textContent=p.s;
+      el.appendChild(s);
+      try{ window.katex.render(p.s, s, {throwOnError:false}); }
+      catch(e){ /* textContent fallback already set */ }
+    } else {
+      const tpl=document.createElement('template'); tpl.innerHTML=p.s;
+      el.appendChild(tpl.content.cloneNode(true));
+    }
+  }
+}
+
+/* ---------- definition popover (rAF-throttled) ---------- */
+const pop=$('#popover'), defLine=$('#derivDefLine');
+let popX=0, popY=0, popQueued=false;
+document.addEventListener('pointerover',e=>{
+  const t=e.target.closest && e.target.closest('.term');
+  if(t&&pop._w!==t){
+    pop._w=t;
+    pop.innerHTML=`<b>${t.dataset.word||'term'}</b><br>${t.dataset.def||''}`;
+    pop.classList.add('show');
+    if(defLine) defLine.textContent=(t.dataset.word||'')+' — '+(t.dataset.def||'');
+  }
+});
+document.addEventListener('pointermove',e=>{
+  popX=e.clientX; popY=e.clientY;
+  if(!popQueued&&pop.classList.contains('show')){
+    popQueued=true;
+    requestAnimationFrame(()=>{
+      pop.style.left=Math.min(window.innerWidth-280, popX+14)+'px';
+      pop.style.top=(popY+16)+'px';
+      popQueued=false;
+    });
+  }
+},{passive:true});
+document.addEventListener('pointerout',e=>{
+  if(e.target.closest && e.target.closest('.term')){ pop._w=null; pop.classList.remove('show'); }
+});
+
+/* ---------- toast ---------- */
+let flashT=null;
+function toast(msg){
+  const f=$('#flash'); f.textContent=msg; f.classList.add('show');
+  clearTimeout(flashT); flashT=setTimeout(()=>f.classList.remove('show'),1600);
+}
+
+/* ---------- smooth odometer numbers (tweened readouts) ---------- */
+function smoothNum(el, target, fmt, ms){
+  if(!el) return;
+  if(REDUCED||typeof target!=='number'||!isFinite(target)){ el.textContent=fmt(target); el._nv=target; return; }
+  const from=(typeof el._nv==='number'&&isFinite(el._nv))?el._nv:target;
+  if(Math.abs(target-from)<1e-9){ el.textContent=fmt(target); el._nv=target; return; }
+  if(el._raf) cancelAnimationFrame(el._raf);
+  const dur=ms||220, t0=performance.now();
+  el._nv=from;
+  const step=t=>{
+    const k=clamp((t-t0)/dur,0,1), e=1-Math.pow(1-k,3), v=from+(target-from)*e;
+    el._nv=v; el.textContent=fmt(v);
+    el._raf=(k<1)?requestAnimationFrame(step):null;
+  };
+  el._raf=requestAnimationFrame(step);
+}
+
+/* ================= OPTIMIZED PLOT ENGINE ================= */
+function niceStep(raw){
+  if(!isFinite(raw)||raw<=0) return 1;
+  const p=Math.pow(10,Math.floor(Math.log10(raw)));
+  const n=raw/p;
+  if(n<1.5) return p; if(n<3.5) return 2*p; if(n<7.5) return 5*p; return 10*p;
+}
+// cached 12px dot pattern (1 fill call instead of ~4000 fillRects)
+let __dotTile=null;
+function dotPattern(ctx){
+  if(__dotTile) return __dotTile;
+  const c=document.createElement('canvas'); c.width=c.height=12;
+  const g=c.getContext('2d');
+  g.fillStyle='rgba(14,34,64,.13)'; g.fillRect(5,5,1.6,1.6);
+  __dotTile=ctx.createPattern(c,'repeat');
+  return __dotTile;
+}
+
+const allPlots=[];
+let viewportIO=null;
+function observeVisibility(plot){
+  if(!viewportIO){
+    viewportIO=new IntersectionObserver(es=>{
+      es.forEach(en=>{
+        const p=allPlots.find(q=>q.c===en.target);
+        if(p){ p.visible=en.isIntersecting; if(en.isIntersecting) p.dirty=true; }
+      });
+    },{rootMargin:'80px'});
+  }
+  viewportIO.observe(plot.c);
+}
+
+class Plot{
+  constructor(canvas, view){
+    this.c=canvas; this.ctx=canvas.getContext('2d',{alpha:false});
+    this.home={...view}; this.view={...view};
+    this.W=300; this.H=380; this.visible=true; this.dirty=true;
+    this._rsQueued=false;
+    this.resize(); this.attachNav();
+    allPlots.push(this); observeVisibility(this);
+    new ResizeObserver(()=>{
+      if(this._rsQueued) return; this._rsQueued=true;
+      requestAnimationFrame(()=>{ this._rsQueued=false; this.resize(); });
+    }).observe(canvas);
+  }
+  resize(){
+    const r=this.c.getBoundingClientRect();
+    const dpr=Math.min(window.devicePixelRatio||1, DPR_CAP);
+    const w=Math.max(50,r.width||300), H=this.c.clientHeight||380;
+    const bw=Math.round(w*dpr), bh=Math.round(H*dpr);
+    if(this.c.width!==bw||this.c.height!==bh){ this.c.width=bw; this.c.height=bh; }
+    this.ctx.setTransform(dpr,0,0,dpr,0,0);
+    this.W=w; this.H=H;
+    this.dirty=true;
+  }
+  markDirty(){ this.dirty=true; }
+  reset(){ this.view={...this.home}; this.markDirty(); }
+  toX(x){ return (x-this.view.xMin)/(this.view.xMax-this.view.xMin)*this.W; }
+  toY(y){ return this.H-(y-this.view.yMin)/(this.view.yMax-this.view.yMin)*this.H; }
+  toMath(px,py){ return { x:this.view.xMin+px/this.W*(this.view.xMax-this.view.xMin), y:this.view.yMin+(this.H-py)/this.H*(this.view.yMax-this.view.yMin) }; }
+  attachNav(){
+    let panning=false, sx=0, sy=0, v0=null;
+    this.c.addEventListener('pointerdown',e=>{
+      if(this.handleDown && this.handleDown(e)) return;
+      panning=true; sx=e.clientX; sy=e.clientY; v0={...this.view};
+      try{this.c.setPointerCapture(e.pointerId);}catch(_){}
+    });
+    this.c.addEventListener('pointermove',e=>{
+      if(this.handleMove && this.handleMove(e)) return;
+      if(!panning||!v0) return;
+      const r=this.c.getBoundingClientRect();
+      if(r.width<1) return;
+      const dx=e.clientX-sx, dy=e.clientY-sy;
+      if(Math.abs(dx)+Math.abs(dy)<2) return;
+      const xr=(v0.xMax-v0.xMin)/r.width, yr=(v0.yMax-v0.yMin)/r.height;
+      this.view.xMin=v0.xMin-dx*xr; this.view.xMax=v0.xMax-dx*xr;
+      this.view.yMin=v0.yMin+dy*yr; this.view.yMax=v0.yMax+dy*yr;
+      this.markDirty();
+    });
+    const up=()=>{ panning=false; v0=null; if(this.handleUp) this.handleUp(); };
+    this.c.addEventListener('pointerup',up); this.c.addEventListener('pointercancel',up);
+    let wheelQ=false, wheelAcc=0, wheelX=0, wheelY=0;
+    this.c.addEventListener('wheel',e=>{
+      e.preventDefault();
+      // accumulate: coalesced frames must not drop scroll distance
+      wheelAcc+=e.deltaY; wheelX=e.clientX; wheelY=e.clientY;
+      if(wheelQ) return; wheelQ=true;
+      requestAnimationFrame(()=>{
+        wheelQ=false;
+        const dy=wheelAcc; wheelAcc=0;
+        if(!dy) return;
+        const r=this.c.getBoundingClientRect();
+        const a=this.toMath(wheelX-r.left, wheelY-r.top);
+        const s=Math.exp(dy*0.0012);
+        const v=this.view;
+        v.xMin=a.x-(a.x-v.xMin)*s; v.xMax=a.x+(v.xMax-a.x)*s;
+        v.yMin=a.y-(a.y-v.yMin)*s; v.yMax=a.y+(v.yMax-a.y)*s;
+        this.markDirty();
+      });
+    },{passive:false});
+    this.c.addEventListener('dblclick',()=>this.reset());
+  }
+  grid(){
+    const {ctx,W,H,view}=this;
+    ctx.fillStyle=PAPER; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=dotPattern(ctx); ctx.fillRect(0,0,W,H);
+    const sx=niceStep((view.xMax-view.xMin)/8), sy=niceStep((view.yMax-view.yMin)/6);
+    // batched minor grid: one stroke for verticals, one for horizontals
+    ctx.lineWidth=1;
+    ctx.strokeStyle="rgba(14,34,64,.16)";
+    ctx.beginPath();
+    for(let x=Math.ceil(view.xMin/sx)*sx; x<=view.xMax; x+=sx+.0){
+      if(Math.abs(x)<1e-9) continue;
+      const px=Math.round(this.toX(x))+.5; ctx.moveTo(px,0); ctx.lineTo(px,H);
+    }
+    ctx.stroke();
+    ctx.beginPath();
+    for(let y=Math.ceil(view.yMin/sy)*sy; y<=view.yMax; y+=sy){
+      if(Math.abs(y)<1e-9) continue;
+      const py=Math.round(this.toY(y))+.5; ctx.moveTo(0,py); ctx.lineTo(W,py);
+    }
+    ctx.stroke();
+    // labels (few, cheap)
+    ctx.font="10px 'JetBrains Mono', monospace"; ctx.fillStyle="#5b6580";
+    for(let y=Math.ceil(view.yMin/sy)*sy; y<=view.yMax; y+=sy){
+      if(Math.abs(y)<1e-9) continue;
+      ctx.fillText(Number(y.toFixed(2)), 6, this.toY(y)-3);
+    }
+    // axes
+    ctx.strokeStyle=NAVY; ctx.lineWidth=1.6;
+    ctx.beginPath();
+    if(view.xMin<0&&view.xMax>0){ const px=Math.round(this.toX(0))+.5; ctx.moveTo(px,0); ctx.lineTo(px,H); }
+    if(view.yMin<0&&view.yMax>0){ const py=Math.round(this.toY(0))+.5; ctx.moveTo(0,py); ctx.lineTo(W,py); }
+    ctx.stroke();
+    if(view.xMin<0&&view.xMax>0&&view.yMin<0&&view.yMax>0){
+      ctx.fillStyle=NAVY; ctx.fillText("0", this.toX(0)+5, this.toY(0)+12);
+    }
+    if(view.yMin<0&&view.yMax>0){
+      for(let x=Math.ceil(view.xMin/sx)*sx; x<=view.xMax; x+=sx){
+        if(Math.abs(x)<1e-9) continue;
+        ctx.fillText(Number(x.toFixed(2)), this.toX(x)+3, this.toY(0)+12);
+      }
+    }
+  }
+  curve(fn, color, width, range){
+    const {ctx}=this, v=this.view;
+    const a=range?range[0]:v.xMin, b=range?range[1]:v.xMax;
+    const step=Math.max(1.5, this.W/320); // adaptive sampling
+    ctx.strokeStyle=color; ctx.lineWidth=width||2.4;
+    ctx.lineJoin='round'; ctx.lineCap='round';
+    ctx.beginPath();
+    let started=false;
+    for(let px=0; px<=this.W; px+=step){
+      const x=a+px/this.W*(b-a);
+      let y; try{y=fn(x);}catch(e){started=false;continue;}
+      if(!isFinite(y)){started=false;continue;}
+      const py=this.toY(y);
+      if(py<-500||py>this.H+500){started=false;continue;}
+      if(!started){ctx.moveTo(px,py);started=true;} else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+  }
+  dot(x,y,color,r){
+    const ctx=this.ctx;
+    ctx.fillStyle=color||ORANGE; ctx.beginPath(); ctx.arc(this.toX(x),this.toY(y),r||6,0,6.2832); ctx.fill();
+    ctx.strokeStyle="#fff"; ctx.lineWidth=2; ctx.stroke();
+  }
+}
+
+/* ================= TICKER ================= */
+(function(){
+  const items=["f(x)=sin(x) → f′(x)=cos(x)","Riemann: lim Σ f(xᵢ*)Δx = ∫ₐᵇ f","ε–δ: ∀ε>0 ∃δ>0 · |x−2|<δ ⇒ |x²−4|<ε","d/dx[xⁿ]=nxⁿ⁻¹","∫x²dx=x³/3+C","tangent: y−f(a)=f′(a)(x−a)"];
+  const t=$('#ticker'); t.innerHTML=(items.concat(items)).map(s=>`<span>◆ ${s}</span>`).join('');
+  if(REDUCED) t.style.animation='none';
+  // pause ticker offscreen
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(es=>{es.forEach(en=>{t.style.animationPlayState=en.isIntersecting&&!REDUCED?'running':'paused';});}).observe(t);
+  }
+})();
+
+/* ================= HERO (smooth sweep + trail) ================= */
+const heroC=$('#heroCanvas');
+const hero=new Plot(heroC,{xMin:-7.5,xMax:7.5,yMin:-2.4,yMax:2.4});
+let heroT=0.6, heroSpeed=REDUCED?0:0.6, heroRun=!REDUCED, heroTrace=true;
+const heroTrail=[]; // {x, born}
+$('#heroSpeed').addEventListener('input',e=>{ heroSpeed=e.target.value/50; $('#heroSpeedVal').textContent=heroSpeed.toFixed(1)+'×'; },{passive:true});
+$('#heroTrace').addEventListener('change',e=>heroTrace=e.target.checked);
+$('#heroPause').addEventListener('click',e=>{ heroRun=!heroRun; e.target.textContent=heroRun?'Pause':'Play'; hero.markDirty(); });
+if(!heroRun){ $('#heroPause').textContent='Play'; $('#heroSpeed').value=0; $('#heroSpeedVal').textContent='0.0×'; }
+let heroDomLast=0;
+function drawHero(now){
+  now=now||performance.now(); // resize() calls onDraw with no timestamp
+  hero.grid();
+  if(heroTrace && !REDUCED){
+    hero.curve(x=>Math.cos(x)*0.55, "rgba(124,92,255,.55)", 2);
+    // fading trail of tangent points (rainbow)
+    const ctx=hero.ctx;
+    for(let i=heroTrail.length-1;i>=0;i--){
+      const tr=heroTrail[i], age=(now-tr.born)/1600;
+      if(age>1){ heroTrail.splice(i,1); continue; }
+      const alpha=(1-age)*0.55, r=2+ (1-age)*5;
+      ctx.globalAlpha=alpha;
+      ctx.fillStyle=RAINBOW[i%RAINBOW.length];
+      ctx.beginPath(); ctx.arc(hero.toX(tr.x), hero.toY(Math.sin(tr.x)), r, 0, 6.2832); ctx.fill();
+      // sparkle cross
+      ctx.strokeStyle="#fff"; ctx.lineWidth=1.2;
+      const px=hero.toX(tr.x), py=hero.toY(Math.sin(tr.x));
+      ctx.beginPath(); ctx.moveTo(px-r-3,py); ctx.lineTo(px+r+3,py); ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+  }
+  hero.curve(x=>Math.sin(x), NAVY, 3.2);
+  // rainbow glow sine underneath
+  if(!REDUCED){
+    hero.ctx.save(); hero.ctx.globalAlpha=.35; hero.ctx.lineWidth=7; hero.ctx.lineCap='round';
+    const g=hero.ctx.createLinearGradient(0,0,hero.W,0);
+    g.addColorStop(0,ORANGE); g.addColorStop(.3,PINK); g.addColorStop(.55,VIOLET); g.addColorStop(.8,CYAN); g.addColorStop(1,GREEN);
+    hero.ctx.strokeStyle=g; hero.ctx.beginPath();
+    for(let px=0;px<=hero.W;px+=4){ const x=hero.toMath(px,0).x, py=hero.toY(Math.sin(x)); px===0?hero.ctx.moveTo(px,py):hero.ctx.lineTo(px,py); }
+    hero.ctx.stroke(); hero.ctx.restore();
+    hero.curve(x=>Math.sin(x), NAVY, 2.6);
+  }
+  const a=heroT, fa=Math.sin(a), m=Math.cos(a);
+  const ctx=hero.ctx;
+  // soft glow under tangent (hue-cycling) + core
+  const tangentHue = REDUCED ? ORANGE : hueCycle(now||performance.now(), 28);
+  ctx.save();
+  ctx.strokeStyle=REDUCED?ORANGE:"rgba(255,77,141,.28)"; ctx.lineWidth=REDUCED?2.6:9; ctx.lineCap='round';
+  const x0=a-2.6, x1=a+2.6;
+  ctx.beginPath(); ctx.moveTo(hero.toX(x0), hero.toY(fa+m*(x0-a))); ctx.lineTo(hero.toX(x1), hero.toY(fa+m*(x1-a))); ctx.stroke();
+  ctx.strokeStyle=tangentHue; ctx.lineWidth=3;
+  if(!REDUCED) ctx.setLineDash([26,10]), ctx.lineDashOffset=-((now||0)/28);
+  ctx.beginPath(); ctx.moveTo(hero.toX(x0), hero.toY(fa+m*(x0-a))); ctx.lineTo(hero.toX(x1), hero.toY(fa+m*(x1-a))); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+  hero.dot(a,fa,tangentHue,7);
+  // orbiting sparkle around moving point
+  if(!REDUCED){
+    const t=(now||0)/420, ox=Math.cos(t)*15, oy=Math.sin(t)*15;
+    ctx.fillStyle="#fff"; ctx.beginPath(); ctx.arc(hero.toX(a)+ox, hero.toY(fa)+oy, 2.4, 0, 6.2832); ctx.fill();
+    ctx.fillStyle=PINK; ctx.beginPath(); ctx.arc(hero.toX(a)-ox, hero.toY(fa)-oy, 1.8, 0, 6.2832); ctx.fill();
+  }
+  // slope label (canvas, clamped into view even on narrow screens)
+  ctx.font="700 12px 'JetBrains Mono', monospace";
+  const lx=clamp(hero.toX(a)+12, 6, Math.max(6,hero.W-170)), ly=clamp(hero.toY(fa)-12, 20, hero.H-8);
+  const label=`m = cos(${a.toFixed(2)}) = ${m.toFixed(2)}`;
+  const w=ctx.measureText(label).width+14;
+  ctx.fillStyle="rgba(253,252,246,.94)"; ctx.fillRect(lx-4,ly-16,w,22);
+  ctx.strokeStyle=NAVY; ctx.lineWidth=1.4; ctx.strokeRect(lx-4,ly-16,w,22);
+  ctx.fillStyle=NAVY; ctx.fillText(label,lx+3,ly);
+  // throttle DOM writes to ~12Hz, eased like an odometer
+  if(now-heroDomLast>80){
+    heroDomLast=now;
+    smoothNum($('#heroSlope'), m, v=>'m = '+v.toFixed(2), 140);
+    smoothNum($('#heroPoint'), a, v=>'x = '+v.toFixed(2), 140);
+  }
+}
+hero.onDraw=drawHero;
+renderMixed($('#heroFormula'),[
+  {t:'html',s:termSpan('tangent','tangent line','The line through (a,f(a)) with slope f′(a). Best linear approximation.')},
+  {t:'tex',s:'\\;y-\\sin(a)\\;=\\;'},
+  {t:'html',s:termSpan('m','slope','Rate of change: rise over run of the tangent. Here m = cos(a).','')},
+  {t:'tex',s:'\\,(x-a)\\quad\\text{with}\\quad m=\\cos(a)'}
+]);
+
+/* ================= DERIVATIVES ================= */
+const FUNCS={
+  cubic:{label:'x³/4 − 3x/2', f:x=>x*x*x/4-1.5*x, fp:x=>0.75*x*x-1.5, home:{xMin:-4,xMax:4,yMin:-4,yMax:4}},
+  sin:{label:'sin(x)', f:x=>Math.sin(x), fp:x=>Math.cos(x), home:{xMin:-7,xMax:7,yMin:-2.2,yMax:2.2}},
+  quad:{label:'x²/2', f:x=>x*x/2, fp:x=>x, home:{xMin:-4,xMax:4,yMin:-1,yMax:6}},
+  exp:{label:'e^{0.4x}/2', f:x=>Math.exp(0.4*x)/2, fp:x=>0.2*Math.exp(0.4*x), home:{xMin:-4,xMax:4,yMin:-1,yMax:6}},
+};
+let dKey='cubic', x0=0.8, showTan=true, showSec=false, hSec=0.8;
+const dC=$('#derivCanvas'), dpC=$('#derivPrimeCanvas');
+const dPlot=new Plot(dC,FUNCS[dKey].home), dpPlot=new Plot(dpC,FUNCS[dKey].home);
+function nearPoint(plot,e,x,y){
+  const r=plot.c.getBoundingClientRect();
+  return Math.hypot(e.clientX-r.left-plot.toX(x), e.clientY-r.top-plot.toY(y))<26;
+}
+let draggingD=false;
+dPlot.handleDown=e=>{ const F=FUNCS[dKey]; if(nearPoint(dPlot,e,x0,F.f(x0))){draggingD=true; stopTour(); try{dPlot.c.setPointerCapture(e.pointerId);}catch(_){} return true;} return false; };
+dPlot.handleMove=e=>{
+  if(!draggingD) return false;
+  const r=dPlot.c.getBoundingClientRect();
+  x0=clamp(dPlot.toMath(e.clientX-r.left, e.clientY-r.top).x, dPlot.view.xMin+.05, dPlot.view.xMax-.05);
+  dPlot.markDirty(); dpPlot.markDirty(); syncDerivReadout(); return true;
+};
+dPlot.handleUp=()=>draggingD=false;
+let draggingP=false;
+dpPlot.handleDown=e=>{
+  const r=dpPlot.c.getBoundingClientRect();
+  if(Math.abs(dpPlot.toX(x0)-(e.clientX-r.left))<30){draggingP=true; stopTour(); try{dpPlot.c.setPointerCapture(e.pointerId);}catch(_){} return true;} return false;
+};
+dpPlot.handleMove=e=>{
+  if(!draggingP) return false;
+  const r=dpPlot.c.getBoundingClientRect();
+  x0=clamp(dpPlot.toMath(e.clientX-r.left,0).x, dpPlot.view.xMin+.05, dpPlot.view.xMax-.05);
+  dPlot.markDirty(); dpPlot.markDirty(); syncDerivReadout(); return true;
+};
+dpPlot.handleUp=()=>draggingP=false;
+function syncDerivReadout(){
+  const F=FUNCS[dKey];
+  smoothNum($('#dX'), x0, v=>v.toFixed(2), 150);
+  smoothNum($('#dF'), F.f(x0), v=>v.toFixed(2), 150);
+  smoothNum($('#dS'), F.fp(x0), v=>v.toFixed(2), 150);
+}
+function redrawDeriv(){
+  const F=FUNCS[dKey], y0=F.f(x0), m=F.fp(x0);
+  const now=performance.now(), sc=slopeColor(m);
+  dPlot.grid(); dPlot.curve(F.f, NAVY, 3);
+  // gradient wash under curve tinted by slope sign
+  try{
+    const ctx0=dPlot.ctx, g0=ctx0.createLinearGradient(0,dPlot.toY(y0),0,dPlot.H);
+    g0.addColorStop(0, m>=0?"rgba(255,107,43,.20)":"rgba(0,194,255,.20)"); g0.addColorStop(1,"rgba(255,255,255,0)");
+    ctx0.fillStyle=g0; ctx0.beginPath();
+    ctx0.moveTo(dPlot.toX(dPlot.view.xMin),dPlot.toY(0));
+    for(let px=0;px<=dPlot.W;px+=4){ const x=dPlot.toMath(px,0).x; ctx0.lineTo(px,dPlot.toY(F.f(x))); }
+    ctx0.lineTo(dPlot.toX(dPlot.view.xMax),dPlot.toY(0)); ctx0.closePath(); ctx0.fill();
+  }catch(_){}
+  if(showSec){
+    const x1=x0+hSec, y1=F.f(x1);
+    const ctx=dPlot.ctx; ctx.strokeStyle=VIOLET; ctx.setLineDash([7,5]);
+    if(!REDUCED) ctx.lineDashOffset=-now/40;
+    ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(dPlot.toX(x0),dPlot.toY(y0)); ctx.lineTo(dPlot.toX(x1),dPlot.toY(y1)); ctx.stroke(); ctx.setLineDash([]);
+    dPlot.dot(x1,y1,"#8a93ad",5);
+    // h-brace
+    ctx.fillStyle="#8a93ad"; ctx.font="11px 'JetBrains Mono', monospace";
+    ctx.fillText(`h=${hSec.toFixed(2)}`, (dPlot.toX(x0)+dPlot.toX(x1))/2-14, dPlot.toY(Math.max(y0,y1))-10);
+  }
+  if(showTan){
+    const ctx=dPlot.ctx, dx=(dPlot.view.xMax-dPlot.view.xMin)*0.28;
+    // glow + core tinted by slope sign (proper animation feel)
+    ctx.save(); ctx.lineCap='round';
+    ctx.strokeStyle="rgba(255,77,141,.25)"; ctx.lineWidth=9;
+    ctx.beginPath(); ctx.moveTo(dPlot.toX(x0-dx), dPlot.toY(y0-m*dx)); ctx.lineTo(dPlot.toX(x0+dx), dPlot.toY(y0+m*dx)); ctx.stroke();
+    ctx.strokeStyle=sc; ctx.lineWidth=3;
+    if(!REDUCED){ ctx.setLineDash([30,12]); ctx.lineDashOffset=-now/30; }
+    ctx.beginPath(); ctx.moveTo(dPlot.toX(x0-dx), dPlot.toY(y0-m*dx)); ctx.lineTo(dPlot.toX(x0+dx), dPlot.toY(y0+m*dx)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+  dPlot.dot(x0,y0,sc,8);
+  // pulse ring while dragging
+  if(draggingD||draggingP){
+    const ctx=dPlot.ctx; ctx.strokeStyle="rgba(255,107,43,.6)"; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(dPlot.toX(x0),dPlot.toY(y0),13,0,6.2832); ctx.stroke();
+  }
+  dPlot.ctx.fillStyle=NAVY; dPlot.ctx.font="700 12px 'JetBrains Mono', monospace";
+  dPlot.ctx.fillText(`(${x0.toFixed(2)}, ${y0.toFixed(2)})`, clamp(dPlot.toX(x0)+12,6,Math.max(6,dPlot.W-120)), clamp(dPlot.toY(y0)-12,14,dPlot.H-6));
+  dpPlot.grid(); dpPlot.curve(F.fp, VIOLET, 3);
+  if(!REDUCED){ // rainbow under-glow for f'
+    dpPlot.ctx.save(); dpPlot.ctx.globalAlpha=.4; dpPlot.ctx.lineWidth=7;
+    const g=dpPlot.ctx.createLinearGradient(0,0,dpPlot.W,0);
+    g.addColorStop(0,CYAN); g.addColorStop(.5,VIOLET); g.addColorStop(1,PINK);
+    dpPlot.ctx.strokeStyle=g; dpPlot.ctx.beginPath();
+    for(let px=0;px<=dpPlot.W;px+=4){ const x=dpPlot.toMath(px,0).x, py=dpPlot.toY(F.fp(x)); px===0?dpPlot.ctx.moveTo(px,py):dpPlot.ctx.lineTo(px,py); }
+    dpPlot.ctx.stroke(); dpPlot.ctx.restore();
+    dpPlot.curve(F.fp, NAVY, 2);
+  }
+  const ctx2=dpPlot.ctx;
+  ctx2.strokeStyle=NAVY; ctx2.setLineDash([5,5]); ctx2.lineWidth=1.4;
+  ctx2.beginPath();
+  const zx=dpPlot.toX(x0);
+  ctx2.moveTo(zx,dpPlot.toY(0)); ctx2.lineTo(zx,dpPlot.toY(m)); ctx2.stroke(); ctx2.setLineDash([]);
+  // shaded height under f' point
+  ctx2.fillStyle="rgba(255,107,43,.15)";
+  ctx2.fillRect(Math.min(zx,dpPlot.toX(0)), Math.min(dpPlot.toY(0),dpPlot.toY(m)), Math.abs(dpPlot.toX(0)-zx), Math.abs(dpPlot.toY(m)-dpPlot.toY(0)));
+  dpPlot.dot(x0,m,ORANGE,8);
+  // pulsing zero-crossing markers (critical points)
+  if(!REDUCED){
+    try{
+      for(let px=0;px<dpPlot.W;px+=6){
+        const x=dpPlot.toMath(px,0).x, y=F.fp(x), x2=dpPlot.toMath(px+6,0).x, y2=F.fp(x2);
+        if((y<0&&y2>=0)||(y>0&&y2<=0)){
+          const pulse=4+2.5*Math.sin(now/280);
+          dpPlot.ctx.strokeStyle=PINK; dpPlot.ctx.lineWidth=2;
+          dpPlot.ctx.beginPath(); dpPlot.ctx.arc(px,dpPlot.toY(0),pulse+4,0,6.2832); dpPlot.ctx.stroke();
+          dpPlot.dot(x,0,PINK,4);
+        }
+      }
+    }catch(_){}
+  }
+  ctx2.fillStyle=NAVY; ctx2.font="700 12px 'JetBrains Mono', monospace";
+  ctx2.fillText(`f′(${x0.toFixed(2)}) = ${m.toFixed(2)}`, clamp(dpPlot.toX(x0)-140,4,Math.max(4,dpPlot.W-170)), clamp(dpPlot.toY(m)-12,14,dpPlot.H-6));
+  syncDerivReadout();
+}
+dPlot.onDraw=redrawDeriv; dpPlot.onDraw=redrawDeriv;
+$('#funcSeg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  const k=b.dataset.f; if(!FUNCS[k]) return; // ignore unknown buttons
+  $$('#funcSeg button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+  dKey=k; dPlot.home={...FUNCS[dKey].home}; dpPlot.home={...FUNCS[dKey].home};
+  dPlot.view={...FUNCS[dKey].home}; dpPlot.view={...FUNCS[dKey].home};
+  x0=clamp(x0, FUNCS[dKey].home.xMin+0.5, FUNCS[dKey].home.xMax-0.5);
+  dPlot.markDirty(); dpPlot.markDirty();
+});
+$('#showTangent').addEventListener('change',e=>{showTan=e.target.checked; dPlot.markDirty();});
+$('#showSecant').addEventListener('change',e=>{showSec=e.target.checked; dPlot.markDirty();});
+let hQ=false;
+$('#hSlider').addEventListener('input',e=>{
+  hSec=e.target.value/100; $('#hVal').textContent=hSec.toFixed(2);
+  showSec=true; $('#showSecant').checked=true;
+  if(hQ) return; hQ=true;
+  requestAnimationFrame(()=>{hQ=false; dPlot.markDirty();});
+},{passive:true});
+/* auto-tour: sweep x₀ back and forth (stops the moment you grab the point) */
+let tour=false;
+function stopTour(){
+  if(!tour) return; tour=false;
+  const b=$('#tourBtn'); if(b){ b.textContent='▶ Tour x₀'; b.classList.remove('running'); }
+}
+$('#tourBtn').addEventListener('click',()=>{
+  tour=!tour;
+  const b=$('#tourBtn'); b.textContent=tour?'■ Stop tour':'▶ Tour x₀'; b.classList.toggle('running',tour);
+});
+renderMixed($('#derivFormula'),[
+  {t:'html',s:termSpan("f′(x)","derivative","Instantaneous rate of change — the slope of the tangent at x.",'')},
+  {t:'tex',s:'=\\;\\lim_{h\\to 0}\\;'},
+  {t:'html',s:termSpan('(f(x+h)−f(x))/h','difference quotient','Slope of the secant through x and x+h. The limit squeezes h to 0.','')},
+]);
+
+/* ================= INTEGRALS (staggered smooth fill) ================= */
+const rC=$('#riemannCanvas');
+const rPlot=new Plot(rC,{xMin:-0.8,xMax:5.2,yMin:-0.5,yMax:7});
+const fI=x=>x*x/4+1;
+const exactI=b=>b*b*b/12+b;
+let nR=8, bR=4.0, method='mid', showExact=true, smoothFill=!REDUCED;
+const METHODS=['left','mid','right','trap'];
+let displayed=targetRects(), animFrom=null, animTo=displayed, animStart=0;
+const FILL_MS=420, STAGGER=10;
+function targetRects(){
+  const a=0,b=bR,n=nR,dx=(b-a)/n,out=[];
+  for(let i=0;i<n;i++){
+    const x0=a+i*dx,x1=a+(i+1)*dx; let xs,h;
+    if(method==='left')xs=x0; else if(method==='right')xs=x1; else if(method==='mid')xs=(x0+x1)/2; else xs=null;
+    h=xs===null?null:fI(xs);
+    out.push({x0,x1,h,xs});
+  }
+  return out;
+}
+function heightFn(rects){
+  return x=>{
+    for(const r of rects){ if(x>=r.x0&&x<=r.x1){ if(r.h!==null) return r.h;
+      const t=(x-r.x0)/((r.x1-r.x0)||1); return lerp(fI(r.x0),fI(r.x1),t); } }
+    return fI(x);
+  };
+}
+let riemannAnimating=false;
+function refreshTarget(){
+  const to=targetRects();
+  if(smoothFill && displayed && displayed.length){
+    const fn=heightFn(displayed);
+    animFrom=to.map(r=>{
+      if(method==='trap') return {...r};
+      return {...r, h:fn((r.x0+r.x1)/2)};
+    });
+    animTo=to; animStart=performance.now(); riemannAnimating=true;
+  } else { displayed=to; animFrom=null; animTo=to; riemannAnimating=false; }
+  rPlot.markDirty();
+  updateSumLabels();
+}
+function riemannSum(){
+  const dx=bR/nR; let s=0;
+  const t=targetRects();
+  for(const r of t){
+    if(method==='trap') s+=(fI(r.x0)+fI(r.x1))/2*dx; else s+=r.h*dx;
+  }
+  return s;
+}
+let sumQ=false;
+function updateSumLabels(){
+  if(sumQ) return; sumQ=true;
+  requestAnimationFrame(()=>{
+    sumQ=false;
+    const s=riemannSum(), ex=exactI(bR), err=s-ex;
+    smoothNum($('#sumApprox'), s, v=>v.toFixed(4), 300);
+    smoothNum($('#sumExact'), ex, v=>v.toFixed(4), 300);
+    smoothNum($('#sumErr'), err, v=>(v>=0?'+':'')+v.toFixed(4), 300);
+    $('#riemannVal').textContent=`R${nR} = ${s.toFixed(3)}`;
+    $('#nVal').textContent=nR; $('#bVal').textContent=bR.toFixed(1);
+  });
+}
+function drawRiemann(now){
+  now=now||performance.now(); // resize() calls onDraw with no timestamp
+  rPlot.grid();
+  const ctx=rPlot.ctx;
+  if(showExact){
+    ctx.fillStyle="rgba(12,175,107,.18)";
+    ctx.beginPath();
+    const px0=rPlot.toX(0), px1=rPlot.toX(bR);
+    ctx.moveTo(px0,rPlot.toY(0));
+    for(let px=px0; px<=px1; px+=3){
+      const x=(px-px0)/((px1-px0)||1)*bR;
+      ctx.lineTo(px,rPlot.toY(fI(x)));
+    }
+    ctx.lineTo(px1,rPlot.toY(0)); ctx.closePath(); ctx.fill();
+  }
+  rPlot.curve(fI, NAVY, 3, [Math.min(0,rPlot.view.xMin), Math.max(bR,rPlot.view.xMax)]);
+  let cur=displayed;
+  if(riemannAnimating&&animFrom){
+    const el=now-animStart;
+    let done=true;
+    cur=animTo.map((r,i)=>{
+      if(method==='trap') return r;
+      const local=clamp((el-i*STAGGER)/(FILL_MS),0,1);
+      if(local<1) done=false;
+      return {...r, h:lerp(animFrom[i].h, r.h, easeOut(local)), grow:easeOut(local)};
+    });
+    if(done||el>FILL_MS+animTo.length*STAGGER+50){ displayed=animTo; riemannAnimating=false; cur=displayed; }
+    else rPlot.markDirty(); // keep animating
+  } else cur=displayed;
+  if(!cur) cur=displayed=targetRects();
+  cur.forEach((r,i)=>{
+    const px0=rPlot.toX(r.x0), px1=rPlot.toX(r.x1);
+    if(method==='trap'){
+      ctx.fillStyle=i%2?"rgba(124,92,255,.50)":"rgba(0,194,255,.38)";
+      ctx.strokeStyle=VIOLET; ctx.lineWidth=1.6;
+      ctx.beginPath();
+      ctx.moveTo(px0,rPlot.toY(0)); ctx.lineTo(px0,rPlot.toY(fI(r.x0)));
+      ctx.lineTo(px1,rPlot.toY(fI(r.x1))); ctx.lineTo(px1,rPlot.toY(0));
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+    } else {
+      const g=(r.grow==null?1:r.grow);
+      ctx.globalAlpha=0.30+0.62*g;
+      // hue by height: short=teal → tall=pink (colourful!)
+      const hn=cur.length<=1?0.5:i/(cur.length-1);
+      ctx.fillStyle=`hsl(${lerp(165,330,hn)} 85% 62% / .55)`;
+      ctx.strokeStyle=`hsl(${lerp(165,330,hn)} 85% 45%)`; ctx.lineWidth=1.6;
+      const py=rPlot.toY(r.h), y0=rPlot.toY(0);
+      // grow from baseline: proper fill animation
+      const topY=lerp(y0,py,g);
+      ctx.fillRect(px0,topY,px1-px0,y0-topY); ctx.strokeRect(px0,topY,px1-px0,y0-topY);
+      // shimmer sweep across fresh rectangles
+      if(!REDUCED&&g>0.05&&g<1){
+        ctx.globalAlpha=0.5*(1-g);
+        ctx.fillStyle="#fff";
+        const sx=lerp(px0,px1,g);
+        ctx.fillRect(sx-2,topY,4,y0-topY);
+        ctx.globalAlpha=0.30+0.62*g;
+      }
+      ctx.globalAlpha=1;
+      if(g>0.6) rPlot.dot(r.xs,r.h,GREEN,3);
+    }
+  });
+}
+rPlot.onDraw=drawRiemann;
+$('#nSlider').addEventListener('input',e=>{nR=+e.target.value; refreshTarget();},{passive:true});
+$('#bSlider').addEventListener('input',e=>{bR=e.target.value/10; refreshTarget();},{passive:true});
+$('#methodSeg').addEventListener('click',e=>{const b=e.target.closest('button'); if(!b)return;
+  if(!METHODS.includes(b.dataset.m)) return; // ignore unknown buttons
+  $$('#methodSeg button').forEach(x=>x.classList.remove('active')); b.classList.add('active'); method=b.dataset.m; refreshTarget();});
+$('#showExact').addEventListener('change',e=>{showExact=e.target.checked; rPlot.markDirty();});
+$('#animateFill').addEventListener('change',e=>{smoothFill=e.target.checked&&!REDUCED; if(!smoothFill){displayed=targetRects(); riemannAnimating=false; rPlot.markDirty();}});
+if(REDUCED){ const af=$('#animateFill'); if(af) af.checked=false; }
+renderMixed($('#riemannFormula'),[
+  {t:'html',s:termSpan('∫₀ᵇ f','definite integral','Total signed area under f from 0 to b.','g')},
+  {t:'tex',s:'=\\;\\lim_{n\\to\\infty}\\;'},
+  {t:'html',s:termSpan('Σ f(xᵢ*)Δx','Riemann sum','Add up n rectangle areas; finer partitions → exact area.','g')},
+]);
+
+/* ================= LIMITS (tweened δ snap) ================= */
+const eC=$('#epsilonCanvas');
+const ePlot=new Plot(eC,{xMin:-0.2,xMax:4.2,yMin:-0.6,yMax:9.5});
+const fL=x=>x*x, aL=2, LL=4;
+let eps=0.8, deltaUser=dmax(0.8), deltaTween=null;
+function dmax(e){ return Math.min(Math.sqrt(4+e)-2, 2-Math.sqrt(Math.max(0.0001,4-e))); }
+// Slider moves in 0.01 steps but the true max (e.g. 0.44949) falls between
+// steps — so anything within half a step counts as correct (rounding, not math).
+const DTOL=0.005;
+const dok=(d,e)=>d<=dmax(e)+DTOL;
+// cached refs + guarded writers for the 60fps ε–δ hot path
+const epsValEl=$('#epsVal'), delValEl=$('#delVal'), deltaTagEl=$('#deltaTag'),
+      deltaCalcEl=$('#deltaCalc'), epsSliderEl=$('#epsSlider'), delSliderEl=$('#delSlider');
+function setText(el,s){ if(el._last!==s){ el._last=s; el.textContent=s; } }
+function setSlider(el,v){ v=Math.round(v); if(el.value!=v) el.value=v; }
+function drawEps(){
+  ePlot.grid();
+  const ctx=ePlot.ctx, now=performance.now();
+  // ε band: violet→cyan gradient wash
+  try{
+    const g=ctx.createLinearGradient(0,ePlot.toY(LL+eps),0,ePlot.toY(LL-eps));
+    g.addColorStop(0,"rgba(124,92,255,.22)"); g.addColorStop(1,"rgba(0,194,255,.22)");
+    ctx.fillStyle=g;
+  }catch(_){ ctx.fillStyle="rgba(124,92,255,.14)"; }
+  ctx.fillRect(0,ePlot.toY(LL+eps),ePlot.W,ePlot.toY(LL-eps)-ePlot.toY(LL+eps));
+  ctx.strokeStyle=VIOLET; ctx.setLineDash([8,6]);
+  if(!REDUCED) ctx.lineDashOffset=-now/36;
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  [LL+eps,LL-eps].forEach(y=>{ctx.moveTo(0,ePlot.toY(y));ctx.lineTo(ePlot.W,ePlot.toY(y));});
+  ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle=NAVY; ctx.font="700 11px 'JetBrains Mono', monospace";
+  ctx.fillText(`L+ε=${(LL+eps).toFixed(2)}`, Math.max(4,ePlot.W-92), ePlot.toY(LL+eps)-5);
+  ctx.fillText(`L−ε=${(LL-eps).toFixed(2)}`, Math.max(4,ePlot.W-92), ePlot.toY(LL-eps)+14);
+  // δ band with soft edge pulse while tweening (orange→pink)
+  const pulse=deltaTween?0.10+0.08*Math.sin(performance.now()/90):0.02*Math.sin(now/500);
+  try{
+    const g2=ctx.createLinearGradient(ePlot.toX(aL-deltaUser),0,ePlot.toX(aL+deltaUser),0);
+    g2.addColorStop(0,"rgba(255,107,43,.20)"); g2.addColorStop(1,"rgba(255,77,141,.20)");
+    ctx.fillStyle=g2;
+  }catch(_){ ctx.fillStyle=`rgba(255,107,43,${0.14+pulse})`; }
+  ctx.fillRect(ePlot.toX(aL-deltaUser),0,ePlot.toX(aL+deltaUser)-ePlot.toX(aL-deltaUser),ePlot.H);
+  ctx.strokeStyle=PINK; ctx.setLineDash([8,6]);
+  if(!REDUCED) ctx.lineDashOffset=now/30;
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  [aL-deltaUser,aL+deltaUser].forEach(x=>{ctx.moveTo(ePlot.toX(x),0);ctx.lineTo(ePlot.toX(x),ePlot.H);});
+  ctx.stroke(); ctx.setLineDash([]);
+  ePlot.curve(fL, "rgba(14,34,64,.35)", 2.2);
+  const valid = dok(deltaUser,eps);
+  ctx.strokeStyle=valid?GREEN:ORANGE; ctx.lineWidth=4; ctx.lineCap='round';
+  ctx.beginPath(); let st=false;
+  const sx0=ePlot.toX(aL-deltaUser), sx1=ePlot.toX(aL+deltaUser);
+  for(let px=sx0; px<=sx1; px+=2.5){
+    const m=ePlot.toMath(px,0), y=fL(m.x), py=ePlot.toY(y);
+    if(!st){ctx.moveTo(px,py);st=true;}else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+  ePlot.dot(aL,LL, valid?GREEN:ORANGE, 7);
+  ctx.fillStyle=NAVY; ctx.font="700 12px 'JetBrains Mono', monospace";
+  ctx.fillText(`a=${aL}  L=${LL}`, clamp(ePlot.toX(aL)+10,6,Math.max(6,ePlot.W-90)), clamp(ePlot.toY(LL)-12,14,ePlot.H-6));
+  setText(epsValEl,eps.toFixed(2));
+  setText(delValEl,deltaUser.toFixed(3));
+  setText(deltaTagEl,`δ = ${deltaUser.toFixed(3)} (max ${dmax(eps).toFixed(3)})`);
+  setText(deltaCalcEl,`δ_max = min(√(4+${eps.toFixed(2)})−2, 2−√(4−${eps.toFixed(2)})) = ${dmax(eps).toFixed(4)}`);
+}
+ePlot.onDraw=drawEps;
+function epsHandleAt(e){
+  const r=ePlot.c.getBoundingClientRect(), py=e.clientY-r.top;
+  return Math.min(Math.abs(py-ePlot.toY(LL+eps)),Math.abs(py-ePlot.toY(LL-eps)))<16;
+}
+let dragEps=false;
+ePlot.handleDown=e=>{ if(epsHandleAt(e)){dragEps=true; stopDemo(); try{ePlot.c.setPointerCapture(e.pointerId);}catch(_){} return true;} return false; };
+ePlot.handleMove=e=>{
+  if(!dragEps) return false;
+  const r=ePlot.c.getBoundingClientRect();
+  eps=clamp(Math.abs(ePlot.toMath(0,e.clientY-r.top).y-LL),0.05,2.0);
+  $('#epsSlider').value=Math.round(eps*100);
+  // live silent follow while dragging — flash + confetti only on release
+  if($('#autoSnap').checked){
+    deltaTween=null; deltaUser=dmax(eps);
+    $('#delSlider').value=Math.round(deltaUser*100);
+    ePlot.markDirty();
+    verdict(true,`ε=${eps.toFixed(2)} … release to lock in δ=${deltaUser.toFixed(3)}.`);
+  } else onEpsChange();
+  return true;
+};
+ePlot.handleUp=()=>{ if(dragEps&&$('#autoSnap').checked){ dragEps=false; snapDelta(true); } else dragEps=false; };
+function verdict(ok,msg){
+  const v=$('#epsVerdict');
+  if(!v) return;
+  const cls='verdict mono '+(ok?'ok':'bad');
+  if(v._c!==cls){ v._c=cls; v.className=cls; }
+  if(v._m!==msg){ v._m=msg; v.textContent=msg; }
+  // beckon the Snap button while δ is invalid
+  const snap=$('#snapBtn'); if(snap){ const a=!ok; if(snap._a!==a){ snap._a=a; snap.classList.toggle('attn',a); } }
+}
+function snapDelta(flash){
+  const target=dmax(eps);
+  if(REDUCED||Math.abs(target-deltaUser)<1e-4){
+    deltaUser=target; $('#delSlider').value=Math.round(deltaUser*100); ePlot.markDirty();
+  } else {
+    deltaTween={from:deltaUser,to:target,start:performance.now(),dur:450};
+    ePlot.markDirty();
+  }
+  if(flash){
+    const done=()=>{
+      eC.classList.remove('flash'); void eC.offsetWidth; eC.classList.add('flash');
+      toast(`δ snapped → ${target.toFixed(3)} ✓ valid`);
+      verdict(true,`✓ δ=${target.toFixed(3)} is the largest that works for ε=${eps.toFixed(2)}. Every x in (a−δ,a+δ) maps inside (L−ε,L+ε).`);
+    };
+    if(REDUCED||!deltaTween) done();
+    else deltaTween.onDone=done;
+  }
+}
+function onEpsChange(){
+  if($('#autoSnap').checked) snapDelta(true);
+  else { ePlot.markDirty(); verdict(false,`ε=${eps.toFixed(2)} set. Your δ=${deltaUser.toFixed(3)} — press “Check my δ” or enable auto-snap.`); }
+}
+let epsQ=false;
+$('#epsSlider').addEventListener('input',e=>{
+  eps=e.target.value/100; stopDemo();
+  if(epsQ) return; epsQ=true;
+  requestAnimationFrame(()=>{
+    epsQ=false;
+    // silent live follow while sliding; confirm with flash on release ('change')
+    if($('#autoSnap').checked){
+      deltaTween=null; deltaUser=dmax(eps);
+      $('#delSlider').value=Math.round(deltaUser*100);
+      ePlot.markDirty();
+      verdict(true,`ε=${eps.toFixed(2)} … release slider to lock in δ=${deltaUser.toFixed(3)}.`);
+    } else onEpsChange();
+  });
+},{passive:true});
+$('#epsSlider').addEventListener('change',()=>{ if($('#autoSnap').checked) snapDelta(true); });
+$('#delSlider').addEventListener('input',e=>{
+  deltaTween=null; deltaUser=e.target.value/100; ePlot.markDirty();
+  const mx=dmax(eps);
+  if(deltaUser<=mx+1e-9) verdict(true,`✓ δ=${deltaUser.toFixed(3)} works (≤ max ${mx.toFixed(3)} for ε=${eps.toFixed(2)}).`);
+  else if(deltaUser<=mx+DTOL) verdict(true,`✓ δ=${deltaUser.toFixed(3)} ≈ max ${mx.toFixed(3)} — within slider rounding, accepted. “Snap δ” gives the exact value.`);
+  else verdict(false,`δ=${deltaUser.toFixed(3)} overshoots: max valid is ${mx.toFixed(3)} for ε=${eps.toFixed(2)}. Nudge δ down a touch, or hit the pulsing “Snap δ”.`);
+},{passive:true});
+$('#snapBtn').addEventListener('click',()=>snapDelta(true));
+$('#checkBtn').addEventListener('click',()=>{
+  const mx=dmax(eps), ok=dok(deltaUser,eps);
+  if(ok){ eC.classList.remove('flash'); void eC.offsetWidth; eC.classList.add('flash'); burstConfetti(60); }
+  verdict(ok, ok?`✓ Correct! δ=${deltaUser.toFixed(3)} keeps the whole δ-interval inside ε=${eps.toFixed(2)} (max ${mx.toFixed(3)}).`:`✗ Not quite — δ=${deltaUser.toFixed(3)} exceeds max ${mx.toFixed(3)}. Shrink it a touch or press “Snap δ”.`);
+});
+/* auto-demo: shrink ε from 2 → 0.12 while δ chases it (any grab cancels) */
+let demo=null;
+function stopDemo(){
+  if(!demo) return; demo=null;
+  const b=$('#demoBtn'); if(b){ b.textContent='▶ Auto-shrink ε'; b.classList.remove('running'); }
+}
+$('#demoBtn').addEventListener('click',()=>{
+  if(demo){ stopDemo(); return; }
+  if(!$('#autoSnap').checked) $('#autoSnap').checked=true;
+  eps=2.0; $('#epsSlider').value=200; deltaTween=null;
+  demo={start:performance.now(), dur:REDUCED?1:4500, from:2.0, to:0.12};
+  const b=$('#demoBtn'); b.textContent='■ Stop demo'; b.classList.add('running');
+});
+tex($('#limitClaim'),'\\lim_{x\\to 2}x^2 = 4');
+renderMixed($('#epsFormula'),[
+  {t:'tex',s:'\\forall\\,'},
+  {t:'html',s:termSpan('ε>0','epsilon','How close f(x) must stay to L. You (the challenger) choose it.','n')},
+  {t:'tex',s:'\\;\\exists\\;'},
+  {t:'html',s:termSpan('δ>0','delta','How close x must stay to a. We must find one that works.','')},
+  {t:'tex',s:'\\;:\\;0<|x-2|<\\delta\\Rightarrow|x^2-4|<\\varepsilon'}
+]);
+
+/* ================= PROOFS ================= */
+const proofA=[
+  {t:'Setup — definition', x:'f^{\\prime}(x)=\\lim_{h\\to 0}\\frac{f(x+h)-f(x)}{h},\\quad f(x)=x^2', p:'We must compute the limit of the difference quotient. Nothing cancels yet.'},
+  {t:'Substitute', x:'\\frac{(x+h)^2-x^2}{h}=\\frac{x^2+2xh+h^2-x^2}{h}', p:'Expand (x+h)². The x² terms will cancel — that is the whole game.'},
+  {t:'Factor h', x:'\\frac{2xh+h^2}{h}=\\frac{h(2x+h)}{h}', p:'The numerator has a common factor h. This is why 0/0 was removable.'},
+  {t:'Cancel (h ≠ 0)', x:'2x+h\\qquad\\text{(for }h\\ne 0\\text{)}', p:'Inside the limit h approaches 0 but never equals it, so cancelling is legal.'},
+  {t:'Take the limit', x:'\\lim_{h\\to 0}(2x+h)=2x', p:'h contributes nothing in the limit. Only 2x survives.'},
+  {t:'∴ Conclusion', x:'\\frac{d}{dx}[x^2]=2x', p:'Slope of x² at any x is 2x. At x=3 the tangent slope is 6. ✓ Exam line.'},
+];
+const proofB=[
+  {t:'Goal', x:'|x^2-4|<\\varepsilon\\quad\\text{whenever }0<|x-2|<\\delta', p:'We control δ. The challenger controls ε. Find δ(ε) that forces the inequality.'},
+  {t:'Factor', x:'|x^2-4|=|x-2|\\,|x+2|', p:'One factor is exactly what δ controls. The other, |x+2|, is the “rogue factor” — bound it.'},
+  {t:'Bound the rogue factor', x:'\\text{Demand }\\delta\\le 1\\Rightarrow x\\in(1,3)\\Rightarrow|x+2|<5', p:'First guess δ≤1 traps x near 2, so |x+2| can be at most 5. Standard exam move.'},
+  {t:'Reduce', x:'|x^2-4|<5|x-2|\\;\\;\\Rightarrow\\;\\;5|x-2|<\\varepsilon', p:'Now force 5|x−2|<ε, i.e. |x−2|<ε/5. Two constraints compete.'},
+  {t:'Choose δ', x:'\\delta=\\min\\!\\left(1,\\,\\frac{\\varepsilon}{5}\\right)', p:'Take the smaller of the two constraints so both hold. This δ always works (sufficient, not largest).'},
+  {t:'∴ QED', x:'0<|x-2|<\\delta\\Rightarrow|x^2-4|<\\varepsilon\\;\\;\\blacksquare', p:'Hence lim(x→2)x²=4. Note: the visual tool shows the larger exact δ_max — any smaller δ also proves it.'},
+];
+let idxA=0, idxB=0, lastProof='A';
+function renderProof(steps, mount, count, idx, accent){
+  mount.innerHTML='';
+  steps.forEach((s,i)=>{
+    const d=document.createElement('div');
+    d.className='pstep'+(i<idx?' done visible':'')+(i===idx?' visible current':'');
+    d.style.animationDelay=Math.min(i*40,240)+'ms';
+    d.innerHTML=`<div class="mono" style="font-size:.7rem;color:${accent};letter-spacing:.08em">STEP ${i+1} — ${s.t}</div><div class="px"></div><div class="pp" style="font-size:.93rem"></div>`;
+    d.querySelector('.pp').textContent=s.p;
+    try{katex.render(s.x,d.querySelector('.px'),{throwOnError:false,displayMode:false});}catch(e){d.querySelector('.px').textContent=s.x;}
+    mount.appendChild(d);
+  });
+  count.textContent=(idx+1)+' / '+steps.length;
+}
+function stepProof(which,dir){
+  const len=which==='A'?proofA.length:proofB.length;
+  const prev=which==='A'?idxA:idxB;
+  if(which==='A'){ idxA=clamp(idxA+dir,0,proofA.length-1); renderProof(proofA,$('#proofASteps'),$('#proofACount'),idxA,'#d94e12'); }
+  else { idxB=clamp(idxB+dir,0,proofB.length-1); renderProof(proofB,$('#proofBSteps'),$('#proofBCount'),idxB,'#0E2240'); }
+  lastProof=which;
+  // pop the counter; confetti only on a genuine arrival at the final step
+  const countEl=which==='A'?$('#proofACount'):$('#proofBCount');
+  if(countEl){ countEl.classList.remove('countpop'); void countEl.offsetWidth; countEl.classList.add('countpop'); }
+  const idx=which==='A'?idxA:idxB;
+  if(dir>0&&idx===len-1&&prev!==idx&&!REDUCED) burstConfetti(45);
+}
+document.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>stepProof(b.dataset.next,1)));
+document.querySelectorAll('[data-prev]').forEach(b=>b.addEventListener('click',()=>stepProof(b.dataset.prev,-1)));
+$('#proofCard1').addEventListener('focus',()=>lastProof='A');
+$('#proofCard2').addEventListener('focus',()=>lastProof='B');
+$('#proofCard1').addEventListener('click',()=>lastProof='A');
+$('#proofCard2').addEventListener('click',()=>lastProof='B');
+document.addEventListener('keydown',e=>{
+  const tag=e.target.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA') return;
+  if(e.key==='ArrowRight'){
+    const ae=document.activeElement;
+    if(ae&&(ae.id==='proofCard1'||ae.id==='proofCard2'||(ae.closest&&ae.closest('.proof-card')))){ e.preventDefault(); stepProof(lastProof,1); }
+    else { const r=$('#proofs').getBoundingClientRect(); if(r.top<window.innerHeight&&r.bottom>0) stepProof(lastProof,1); }
+  }
+  if(e.key==='ArrowLeft'){
+    const r=$('#proofs').getBoundingClientRect();
+    if(r.top<window.innerHeight&&r.bottom>0) stepProof(lastProof,-1);
+  }
+});
+tex($('#proofAFormula'),'\\dfrac{d}{dx}[x^2]\\;=\\;2x');
+tex($('#proofBFormula'),'\\lim_{x\\to 2}\\,x^2\\;=\\;4');
+renderProof(proofA,$('#proofASteps'),$('#proofACount'),0,'#d94e12');
+renderProof(proofB,$('#proofBSteps'),$('#proofBCount'),0,'#0E2240');
+
+/* ================= PRACTICE ================= */
+const PROBLEMS=[
+  {cls:'o', diff:'DERIVATIVE · MEDIUM', title:'The sliding ladder',
+   story:'A 5 m ladder slips: bottom slides out at 0.8 m/s when it is 3 m from the wall. How fast is the top sliding down? Include units and sign.',
+   hints:['Let x(t), y(t) with x²+y²=25. Differentiate implicitly: 2x·x′+2y·y′=0.','At x=3, y=4. Plug x′=+0.8. Solve for y′.','y′ = −(x/y)·x′ = −(3/4)(0.8). Negative = sliding down.'],
+   sol:'y′ = −0.6 m/s. The top slides down at 0.6 m/s. Units + sign required for full marks.',
+   tex:'x^2+y^2=25\\;\\Rightarrow\\;y^{\\prime}=-\\frac{x}{y}x^{\\prime}=-0.6\\text{ m/s}'},
+  {cls:'o', diff:'OPTIMIZATION · HARD', title:'The maximal box',
+   story:'From a 12×12 cm sheet, cut squares of side h from corners and fold up an open box. Find h maximizing volume. Prove it is a max.',
+   hints:['V(h)=h(12−2h)², domain 0<h<6. Expand or use product rule.','V′(h)=(12−2h)(12−6h)=0 → h=2 (h=6 rejected).','V″(2)<0, or sign chart +−: confirms local max; endpoints give V=0.'],
+   sol:'h = 2 cm gives V = 128 cm³, the global max on [0,6]. Always check endpoints + second derivative.',
+   tex:'V=h(12-2h)^2,\\;V^{\\prime}=0\\Rightarrow h=2\\text{ cm},\\;V_{max}=128\\text{ cm}^3'},
+  {cls:'g', diff:'INTEGRAL · MEDIUM', title:'Area under the arch',
+   story:'Find the exact area under f(x)=x²/4+1 from 0 to 4. Then estimate with a midpoint R₄ and bound the error.',
+   hints:['Antiderivative: F(x)=x³/12+x. Evaluate F(4)−F(0).','Midpoint R₄ with Δx=1 at x*=0.5,1.5,2.5,3.5.','Exact = 28/3 ≈ 9.333. Midpoint over/under? Convex f ⇒ midpoint underestimates.'],
+   sol:'Exact 28/3 ≈ 9.333. Midpoint R₄ ≈ 9.25 (error ≈ 0.08). Drag the Integral sliders to n=4/mid to verify.',
+   tex:'\\int_0^4\\!(x^2/4+1)\\,dx=\\left[x^3/12+x\\right]_0^4=28/3'} ,
+  {cls:'', diff:'LIMIT · EXAM CLASSIC', title:'Prove it with ε–δ',
+   story:'Prove lim(x→2) x² = 4 from the definition. Give an explicit δ(ε) and verify the implication.',
+   hints:['Factor: |x²−4|=|x−2||x+2|. Rogue factor is |x+2|.','Assume δ≤1 → x∈(1,3) → |x+2|<5.','Take δ=min(1,ε/5). Then |x²−4|<5|x−2|<ε. ∎'],
+   sol:'δ(ε)=min(1,ε/5) works. Any smaller δ works too — the tool’s δ_max is the largest possible; sufficiency is all the proof needs.',
+   tex:'\\delta=\\min(1,\\varepsilon/5):\\;|x-2|<\\delta\\Rightarrow|x^2-4|<\\varepsilon\\;\\blacksquare'},
+];
+const pg=$('#practiceGrid');
+PROBLEMS.forEach((p,i)=>{
+  const card=document.createElement('div'); card.className='card pcard reveal';
+  card.innerHTML=`<div class="pcard-head"><span class="diff ${p.cls}">${p.diff}</span><span class="mono" style="font-size:.72rem;color:var(--muted)">P.${i+1}</span></div>
+  <div class="pcard-body"><h3 style="font-family:var(--sans);margin:.1em 0">${p.title}</h3>
+  <p class="story">${p.story}</p><div class="hints"></div><div class="solution"><div class="stx"></div><p></p></div>
+  <div class="pcard-actions"><button class="btn btn-ghost small" data-h>Hint <span>1</span></button><button class="btn btn-navy small" data-s>Show solution</button></div></div>`;
+  const hintsBox=card.querySelector('.hints');
+  p.hints.forEach(h=>{const d=document.createElement('div');d.className='hint';d.textContent=h;hintsBox.appendChild(d);});
+  let hn=0;
+  const hb=card.querySelector('[data-h]');
+  hb.addEventListener('click',()=>{
+    const hs=hintsBox.children;
+    if(hn<hs.length){
+      hs[hn].classList.add('show');
+      // animate height properly
+      hs[hn].style.animation='none'; void hs[hn].offsetWidth; hs[hn].style.animation='';
+      hn++; const sp=hb.querySelector('span'); if(sp) sp.textContent=Math.min(hn+1,hs.length);
+      if(hn>=hs.length) hb.textContent='No more hints';
+    }
+  });
+  const sol=card.querySelector('.solution');
+  try{katex.render(p.tex,sol.querySelector('.stx'),{throwOnError:false});}catch(e){sol.querySelector('.stx').textContent=p.tex;}
+  sol.querySelector('p').textContent=p.sol;
+  card.querySelector('[data-s]').addEventListener('click',e=>{sol.classList.toggle('show');e.target.textContent=sol.classList.contains('show')?'Hide solution':'Show solution';});
+  pg.appendChild(card);
+});
+
+/* ---------- mobile menu ---------- */
+$('#menuBtn').addEventListener('click',()=>$('#mobileMenu').classList.toggle('show'));
+$$('#mobileMenu a').forEach(a=>a.addEventListener('click',()=>$('#mobileMenu').classList.remove('show')));
+
+/* ---------- smooth anchors ---------- */
+$$('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{
+  const t=document.querySelector(a.getAttribute('href')); if(t){e.preventDefault(); t.scrollIntoView({behavior:REDUCED?'auto':'smooth'});}
+}));
+
+/* ---------- scroll reveal (proper entrance animation) ---------- */
+(function(){
+  const els=$$('.card, .sec-head');
+  els.forEach(el=>el.classList.add('reveal'));
+  if(REDUCED||!('IntersectionObserver' in window)){ els.forEach(el=>el.classList.add('in')); return; }
+  const io=new IntersectionObserver(es=>{
+    es.forEach(en=>{
+      if(en.isIntersecting){
+        en.target.classList.add('in');
+        io.unobserve(en.target);
+        setTimeout(()=>{ en.target.style.transitionDelay=''; },950);
+      }
+    });
+  },{threshold:0.08, rootMargin:'0px 0px -6% 0px'});
+  els.forEach((el,i)=>{ el.style.transitionDelay=((i%4)*80)+'ms'; io.observe(el); });
+})();
+
+/* ================= COLOUR FX: particles + progress + confetti ================= */
+const FX_COLORS=[ORANGE,PINK,VIOLET,CYAN,GREEN,AMBER];
+function burstConfetti(n){
+  if(REDUCED) return;
+  const box=$('#confetti'); if(!box) return;
+  if(box.children.length>220) return; // flood guard: never pile up nodes
+  for(let i=0;i<(n||50);i++){
+    const s=document.createElement('i');
+    const sz=6+Math.random()*8;
+    s.style.left=Math.random()*100+'vw';
+    s.style.background=FX_COLORS[i%FX_COLORS.length];
+    s.style.width=(sz*0.7)+'px'; s.style.height=sz+'px';
+    s.style.animationDuration=(1.4+Math.random()*1.6)+'s';
+    s.style.transform=`rotate(${Math.random()*360}deg)`;
+    box.appendChild(s);
+    setTimeout(()=>s.remove(),3200);
+  }
+}
+// hook confetti into δ snap success
+(function(){
+  const _snap=snapDelta;
+  snapDelta=function(flash){
+    _snap(flash);
+    if(flash&&!REDUCED) setTimeout(()=>burstConfetti(36),430);
+  };
+})();
+// scroll progress bar
+(function(){
+  const bar=$('#progress'); if(!bar) return;
+  let q=false;
+  addEventListener('scroll',()=>{
+    if(q) return; q=true;
+    requestAnimationFrame(()=>{
+      q=false;
+      const h=document.documentElement;
+      const p=h.scrollTop/((h.scrollHeight-h.clientHeight)||1);
+      bar.style.width=(p*100).toFixed(2)+'%';
+    });
+  },{passive:true});
+})();
+// floating particle field (one cheap canvas, paused offscreen)
+const partC=$('#particles');
+const partX=partC?partC.getContext('2d'):null;
+let parts=[], partVisible=true;
+function partResize(){
+  if(!partC) return;
+  const dpr=Math.min(devicePixelRatio||1,1.5);
+  partC.width=innerWidth*dpr; partC.height=innerHeight*dpr;
+  partC.style.width=innerWidth+'px'; partC.style.height=innerHeight+'px';
+  partX.setTransform(dpr,0,0,dpr,0,0);
+}
+if(partC&&!REDUCED){
+  partResize(); addEventListener('resize',partResize);
+  for(let i=0,n=(innerWidth<700?16:30);i<n;i++) parts.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:1.5+Math.random()*3.5,c:FX_COLORS[i%FX_COLORS.length],vx:(Math.random()-.5)*.35,vy:-.1-Math.random()*.4,ph:Math.random()*6.28});
+  if('IntersectionObserver' in window) new IntersectionObserver(es=>{partVisible=es[0].isIntersecting;}).observe(document.body);
+  document.addEventListener('visibilitychange',()=>{partVisible=!document.hidden;});
+}
+function drawParts(now){
+  if(!partC||REDUCED||!partVisible||document.hidden) return;
+  partX.clearRect(0,0,innerWidth,innerHeight);
+  for(const p of parts){
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.y<-12){p.y=innerHeight+10;p.x=Math.random()*innerWidth;}
+    if(p.x<-12)p.x=innerWidth+10; if(p.x>innerWidth+12)p.x=-10;
+    const tw=.35+.35*Math.sin(now/900+p.ph);
+    partX.globalAlpha=tw;
+    partX.fillStyle=p.c;
+    partX.beginPath(); partX.arc(p.x,p.y,p.r,0,6.2832); partX.fill();
+  }
+  partX.globalAlpha=1;
+}
+// count-up pop for Riemann tag
+(function(){
+  let last="";
+  const _up=updateSumLabels;
+  updateSumLabels=function(){
+    _up();
+    requestAnimationFrame(()=>{
+      const el=$('#riemannVal'); if(!el) return;
+      if(el.textContent!==last){
+        last=el.textContent;
+        el.style.transform='scale(1.18) rotate(-2deg)';
+        clearTimeout(el._popT);
+        el._popT=setTimeout(()=>{ el.style.transform=''; },180);
+      }
+    });
+  };
+  const _rv=$('#riemannVal'); if(_rv) _rv.style.transition='transform .18s cubic-bezier(.34,1.56,.64,1)';
+})();
+
+/* ---------- 3D tilt cards + cursor glow (fine pointers only) ---------- */
+let glowX=-500, glowY=-500, glowTX=-500, glowTY=-500, glowSeen=false;
+(function(){
+  if(REDUCED||!matchMedia('(pointer:fine)').matches) return;
+  $$('.plot-card, .hero-plot').forEach(card=>{
+    card.addEventListener('pointermove',e=>{
+      const r=card.getBoundingClientRect();
+      const rx=((e.clientY-r.top)/r.height-.5)*-4.5, ry=((e.clientX-r.left)/r.width-.5)*6;
+      card.style.transform=`perspective(950px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateY(-3px)`;
+    },{passive:true});
+    card.addEventListener('pointerleave',()=>{ card.style.transform=''; });
+  });
+  const glow=$('#glow');
+  addEventListener('pointermove',e=>{
+    glowTX=e.clientX; glowTY=e.clientY;
+    if(!glowSeen){ glowSeen=true; glowX=glowTX; glowY=glowTY; glow.classList.add('on'); }
+  },{passive:true});
+})();
+
+/* ================= MASTER SCHEDULER (one rAF for everything) ================= */
+deltaUser=dmax(eps);
+$('#delSlider').value=Math.round(deltaUser*100);
+verdict(true,`✓ δ=${deltaUser.toFixed(3)} is the largest that works for ε=${eps.toFixed(2)}. Drag the dashed ε-lines or the slider.`);
+updateSumLabels(); syncDerivReadout();
+allPlots.forEach(p=>p.markDirty());
+
+let lastNow=performance.now(), heroAcc=0, frameNo=0, demoDomLast=0;
+function master(now){
+  requestAnimationFrame(master);
+  if(document.hidden) { lastNow=now; return; }
+  const dt=Math.min(0.05,(now-lastNow)/1000); lastNow=now; frameNo++;
+  const ambientTick=(frameNo%2===0); // 30fps is plenty for marching-ants shimmer
+  // hero sweep (time-based, pauses offscreen; static when speed is 0)
+  if(heroRun&&!REDUCED&&hero.visible){
+    if(heroSpeed>0){
+      heroT+=dt*1.4*heroSpeed;
+      if(heroT>Math.PI*2.2) heroT=-Math.PI*2.2;
+      heroAcc+=dt;
+      if(heroAcc>0.09){ heroAcc=0; if(heroTrace&&heroTrail.length<60) heroTrail.push({x:heroT,born:now}); }
+      hero.markDirty();
+    } else if(heroTrace&&heroTrail.length){ hero.markDirty(); } // let trail fade, then sleep
+  } else if(heroRun&&REDUCED&&hero.visible){
+    // reduced motion: static frame only
+  }
+  // marching-ants shimmer at 30fps; full rate while interacting
+  if(!REDUCED){
+    const eBusy=deltaTween||demo||dragEps;
+    if(ePlot.visible&&(eBusy||ambientTick)) ePlot.markDirty();
+    const dBusy=draggingD||draggingP||tour;
+    if(dBusy){ if(dPlot.visible) dPlot.markDirty(); if(dpPlot.visible) dpPlot.markDirty(); }
+    else if(showSec&&ambientTick){ if(dPlot.visible) dPlot.markDirty(); if(dpPlot.visible) dpPlot.markDirty(); }
+  }
+  // derivative tour: sweep x₀ across the view (stops when you grab it)
+  if(tour&&!draggingD&&!draggingP&&!REDUCED){
+    const v=dPlot.view, c=(v.xMin+v.xMax)/2, a=(v.xMax-v.xMin)*0.38;
+    x0=c+a*Math.sin(now/1400);
+    dPlot.markDirty(); dpPlot.markDirty(); syncDerivReadout();
+  }
+  // ε demo: shrink 2 → 0.12 while δ chases (DOM synced at ~10Hz)
+  if(demo){
+    const k=clamp((now-demo.start)/demo.dur,0,1);
+    eps=lerp(demo.from,demo.to,easeInOut(k));
+    deltaTween=null; deltaUser=dmax(eps);
+    ePlot.markDirty();
+    if(now-demoDomLast>100){
+      demoDomLast=now;
+      setSlider(epsSliderEl,eps*100); setSlider(delSliderEl,deltaUser*100);
+      verdict(true,`Demo: ε=${eps.toFixed(2)} → δ=${deltaUser.toFixed(3)} chasing…`);
+    }
+    if(k>=1){ stopDemo(); snapDelta(true); }
+  }
+  if(deltaTween){
+    const t=clamp((now-deltaTween.start)/deltaTween.dur,0,1);
+    deltaUser=lerp(deltaTween.from,deltaTween.to,easeInOut(t));
+    ePlot.markDirty();
+    if(t>=1){ const cb=deltaTween.onDone; deltaTween=null; ePlot.markDirty(); if(cb) cb(); }
+    else ePlot.markDirty();
+  }
+  // draw only visible + dirty plots
+  for(const p of allPlots){
+    if(!p.visible||!p.dirty||!p.onDraw) continue;
+    p.dirty=false;
+    try{ p.onDraw(now); }catch(err){ /* keep loop alive */ }
+  }
+  drawParts(now);
+  if(glowSeen&&!REDUCED){
+    glowX+=(glowTX-glowX)*0.12; glowY+=(glowTY-glowY)*0.12;
+    const glow=$('#glow');
+    if(glow) glow.style.transform=`translate(${glowX.toFixed(1)}px,${glowY.toFixed(1)}px) translate(-50%,-50%)`;
+  }
+}
+requestAnimationFrame(master);
+document.addEventListener('visibilitychange',()=>{ lastNow=performance.now(); });
+
+})();
+
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
